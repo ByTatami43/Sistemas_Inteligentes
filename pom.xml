@@ -30,9 +30,14 @@
             <version>4.6.0</version>
         </dependency>
         <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.17.2</version>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>1.44.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
         </dependency>
     </dependencies>
 
@@ -50,7 +55,7 @@
                         <argument>-gui</argument>
                         <argument>-agents</argument>
                         <!-- Modificar para arrancar los distintos agentes -->
-                        <argument>AgenteInterfaz:org.inteligentes.AgenteInterfaz</argument>
+                        <argument>AgenteInterfaz:org.inteligentes.AgenteInterfaz;org.inteligentes.AgenteScrapper:org.inteligentes.AgenteScrapper;org.inteligentes.AgenteProcesamiento:org.inteligentes.AgenteProcesamiento</argument>
                     </arguments>
                 </configuration>
             </plugin>
