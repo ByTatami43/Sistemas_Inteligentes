@@ -20,7 +20,7 @@ public class AgentExample extends Agent {
         Object[] params=new Object[1];
         params[0]="nuevo_parametro";
         try{
-            AgentController agnt=container.createNewAgent("nuevoAgente", "es.upm.ejemplo.AgBasicoParams", params);
+            AgentController agnt=container.createNewAgent("nuevoAgente", "org.inteligentes.AgBasicoParams", params);
             agnt.start();
         }
         catch(Exception e){e.printStackTrace();}
