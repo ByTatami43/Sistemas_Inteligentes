@@ -6,17 +6,73 @@
 
     <groupId>org.inteligentes</groupId>
     <artifactId>Inteligentes</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
+    <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>tilab</id>
+            <name>TILab repository</name>
+            <url>https://jade.tilab.com/maven/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tilab.jade</groupId>
+            <artifactId>jade</artifactId>
+            <version>4.6.0</version>
+        </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.17.2</version>
         </dependency>
-    </properties>
+    </dependencies>
 
+    <build>
+        <finalName>monitor-precios</finalName>
+        <plugins>
+            <!-- Permite arrancar la plataforma con: mvn exec:java -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>jade.Boot</mainClass>
+                    <arguments>
+                        <argument>-gui</argument>
+                        <argument>-agents</argument>
+                        <!-- Modificar para arrancar los distintos agentes -->
+                        <argument>procesamiento:es.upm.monitor.agentes.AgenteProcesamiento;interfaz:es.upm.monitor.agentes.AgenteInterfaz;percepcion:es.upm.monitor.agentes.AgentePercepcion</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <!-- Genera un jar ejecutable con todas las dependencias dentro -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>jade.Boot</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
