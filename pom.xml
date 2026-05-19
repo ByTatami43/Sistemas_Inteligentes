@@ -50,7 +50,7 @@
                         <argument>-gui</argument>
                         <argument>-agents</argument>
                         <!-- Modificar para arrancar los distintos agentes -->
-                        <argument>procesamiento:es.upm.monitor.agentes.AgenteProcesamiento;interfaz:es.upm.monitor.agentes.AgenteInterfaz;percepcion:es.upm.monitor.agentes.AgentePercepcion</argument>
+                        <argument>AgenteInterfaz:org.inteligentes.AgenteInterfaz</argument>
                     </arguments>
                 </configuration>
             </plugin>
