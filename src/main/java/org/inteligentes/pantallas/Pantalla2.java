@@ -1,5 +1,7 @@
 package org.inteligentes.pantallas;
 
+import org.inteligentes.Producto;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -15,29 +17,14 @@ public class Pantalla2 extends JPanel {
     private final CardLayout bloqueProductoLayout;
     private final JPanel contenedor;
 
-    /* Modelo de datos de un producto */
-    public static class Producto {
-        public String nombre;
-        public String url;
-        public double umbral;
-        public boolean alerta;
-
-        public Producto(String nombre, String url, double umbral, boolean alerta) {
-            this.nombre = nombre;
-            this.url = url;
-            this.umbral = umbral;
-            this.alerta = alerta;
-        }
-    }
-
     public Pantalla2(CardLayout bloqueProductoLayout, JPanel contenedor, Pantalla3 pantalla3) {
         this.pantalla3 = pantalla3;
         this.bloqueProductoLayout = bloqueProductoLayout;
         this.contenedor = contenedor;
 
-        Color fondoGris        = new Color(224, 224, 224);
-        Color colorGrisOscuro  = new Color(51, 51, 51);
-        Color colorLinea       = new Color(220, 220, 220);
+        Color fondoGris       = new Color(224, 224, 224);
+        Color colorGrisOscuro = new Color(51, 51, 51);
+        Color colorLinea      = new Color(220, 220, 220);
 
         setBackground(fondoGris);
         setLayout(new GridBagLayout());
@@ -171,8 +158,8 @@ public class Pantalla2 extends JPanel {
     /* Cambia el estado de alerta de un producto y reconstruye toda la lista */
     public void actualizarAlerta(String url, boolean alerta) {
         for (Producto p : productos) {
-            if (p.url.equals(url)) {
-                p.alerta = alerta;
+            if (p.getEnlace().equals(url)) {
+                p.setAlerta(alerta);
                 break;
             }
         }
@@ -197,7 +184,7 @@ public class Pantalla2 extends JPanel {
         fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 56));
         fila.setBorder(new EmptyBorder(14, 20, 14, 20));
 
-        JLabel lblNombre = new JLabel(p.nombre);
+        JLabel lblNombre = new JLabel(p.getNombre());
         lblNombre.setFont(new Font("SansSerif", Font.PLAIN, 14));
         lblNombre.setForeground(new Color(50, 80, 140));
 
@@ -209,7 +196,7 @@ public class Pantalla2 extends JPanel {
 
     /* Crea el botón de acción de cada fila, rojo si hay alerta, azul si no */
     private JButton crearBotonFila(Producto p) {
-        boolean alerta = p.alerta;
+        boolean alerta = p.isAlerta();
         String texto   = alerta ? "ALERT" : "View Item";
         Color colorBtn = alerta ? new Color(210, 45, 45) : new Color(52, 120, 210);
         Color hover    = alerta ? new Color(180, 30, 30) : new Color(30, 90, 170);
@@ -240,7 +227,7 @@ public class Pantalla2 extends JPanel {
         });
         /* Al pulsar carga el producto en Pantalla3 y navega a ella */
         btn.addActionListener(e -> {
-            pantalla3.cargarProducto(p.nombre, p.url, 0.00, 0.00, p.umbral);
+            pantalla3.cargarProducto(p);
             bloqueProductoLayout.show(contenedor, "pantalla3");
         });
 

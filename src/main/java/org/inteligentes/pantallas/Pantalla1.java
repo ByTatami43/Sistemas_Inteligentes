@@ -1,5 +1,7 @@
 package org.inteligentes.pantallas;
 
+import org.inteligentes.Producto;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -16,7 +18,7 @@ public class Pantalla1 extends JPanel {
     public Pantalla1(CardLayout bloqueProductoLayout, JPanel contenedor, Pantalla2 pantalla2) {
         Color fondoGris = new Color(224, 224, 224);
         Color colorGrisOscuro = new Color(51, 51, 51);
-        Color colorTexto = new Color(153, 153 , 153 );
+        Color colorTexto = new Color(153, 153, 153);
         Color colorBordeFino = new Color(85, 85, 85);
 
         setBackground(fondoGris);
@@ -43,17 +45,15 @@ public class Pantalla1 extends JPanel {
         bloqueProducto.setBorder(new EmptyBorder(25, 20, 25, 20));
 
         /* Basicamente donde se pone el texto de la url */
-        urlInput = new JTextArea(3, 40); // JTextArea porque el texto puede ser muy largo
-        urlInput.setLineWrap(true); // Permite que el texto siga en la linea siguiente
-        urlInput.setWrapStyleWord(true); // El salto de linea no corta palabras completas
+        urlInput = new JTextArea(3, 40);
+        urlInput.setLineWrap(true);
+        urlInput.setWrapStyleWord(true);
         urlInput.setFont(new Font("SansSerif", Font.PLAIN, 15));
         urlInput.setBackground(colorGrisOscuro);
         urlInput.setForeground(colorTexto);
         urlInput.setCaretColor(Color.WHITE);
         urlInput.setText("Pega aquí la URL del producto");
         urlInput.setBorder(new BordeRedondeado(colorBordeFino, 1, 8));
-        /* Monitoriza si el usuario esta escribiendo aqui, si lo esta reemplaza el texto original por el que escriba
-        * el usuario sino se queda como estaba originalmente */
         urlInput.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (urlInput.getText().equals("Pega aquí la URL del producto")) {
@@ -72,7 +72,7 @@ public class Pantalla1 extends JPanel {
         /* Lo mismo que lo anterior pero para el precio */
         JLabel precioBuscado = new JLabel("Precio buscado (€)");
         precioBuscado.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        precioBuscado.setForeground(new Color(153 , 153 , 153));
+        precioBuscado.setForeground(new Color(153, 153, 153));
         precioBuscado.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         precioInput = new JTextField(10);
@@ -100,7 +100,7 @@ public class Pantalla1 extends JPanel {
 
         JLabel nombreProducto = new JLabel("Nombre del Producto");
         nombreProducto.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        nombreProducto.setForeground(new Color(153 , 153 , 153));
+        nombreProducto.setForeground(new Color(153, 153, 153));
         nombreProducto.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         nombreInput = new JTextField(10);
@@ -172,7 +172,6 @@ public class Pantalla1 extends JPanel {
             public void mouseEntered(MouseEvent e) { botonAdd.setBackground(new Color(68, 68, 68)); }
             public void mouseExited(MouseEvent e)  { botonAdd.setBackground(colorGrisOscuro); }
         });
-        /* */
         botonAdd.addActionListener(e -> {
             String url = urlInput.getText().trim();
             String precio = precioInput.getText();
@@ -196,7 +195,7 @@ public class Pantalla1 extends JPanel {
                 return;
             }
 
-            pantalla2.agregarProducto(new Pantalla2.Producto(nombre, url, umbral, false));
+            pantalla2.agregarProducto(new Producto(nombre, url, umbral));
             bloqueProductoLayout.show(contenedor, "pantalla2");
         });
 
@@ -217,7 +216,7 @@ public class Pantalla1 extends JPanel {
         bloqueProducto.add(urlYPrecioBox, BorderLayout.CENTER);
         bloqueProducto.add(btnPanel, BorderLayout.SOUTH);
 
-        /* Igual que con el otro boton solo que para ver la lista de productos*/
+        /* Igual que con el otro boton solo que para ver la lista de productos */
         botonVerLista = new JButton("VER LISTA DE PRODUCTOS") {
             @Override
             protected void paintComponent(Graphics g) {
@@ -239,7 +238,7 @@ public class Pantalla1 extends JPanel {
         botonVerLista.setPreferredSize(new Dimension(280, 42));
 
         botonVerLista.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { botonVerLista.setBackground(new Color(68,68,68)); }
+            public void mouseEntered(MouseEvent e) { botonVerLista.setBackground(new Color(68, 68, 68)); }
             public void mouseExited(MouseEvent e)  { botonVerLista.setBackground(colorGrisOscuro); }
         });
         botonVerLista.addActionListener(e -> bloqueProductoLayout.show(contenedor, "pantalla2"));
@@ -254,30 +253,6 @@ public class Pantalla1 extends JPanel {
         add(centerBlock);
 
         SwingUtilities.invokeLater(this::requestFocusInWindow);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Extractor Amazon");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(800, 720);
-            frame.setLocationRelativeTo(null);
-
-            CardLayout bloqueProductoLayout = new CardLayout();
-            JPanel contenedor = new JPanel(bloqueProductoLayout);
-
-            // Se crean en orden inverso de dependencia: 3 → 2 → 1
-            Pantalla3 pantalla3 = new Pantalla3(bloqueProductoLayout, contenedor);
-            Pantalla2 pantalla2 = new Pantalla2(bloqueProductoLayout, contenedor, pantalla3);
-            Pantalla1 pantalla1 = new Pantalla1(bloqueProductoLayout, contenedor, pantalla2);
-
-            contenedor.add(pantalla1, "pantalla1");
-            contenedor.add(pantalla2, "pantalla2");
-            contenedor.add(pantalla3, "pantalla3");
-
-            frame.add(contenedor);
-            frame.setVisible(true);
-        });
     }
 
     static class BordeRedondeado implements Border {

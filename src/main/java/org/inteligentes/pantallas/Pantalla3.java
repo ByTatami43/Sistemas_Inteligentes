@@ -1,11 +1,14 @@
 package org.inteligentes.pantallas;
 
+import org.inteligentes.Producto;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Pantalla3 extends JPanel {
 
@@ -15,20 +18,6 @@ public class Pantalla3 extends JPanel {
     private final JLabel lblVariacion;
     private final JLabel lblUmbral;
     private final JPanel historialPanel;
-    private final List<RegistroPrecio> historial = new ArrayList<>();
-
-    /* Modelo de datos de un registro de precio en el historial */
-    public static class RegistroPrecio {
-        public String timestamp;
-        public double precioInicial;
-        public double precioFinal;
-
-        public RegistroPrecio(String timestamp, double precioInicial, double precioFinal) {
-            this.timestamp = timestamp;
-            this.precioInicial = precioInicial;
-            this.precioFinal = precioFinal;
-        }
-    }
 
     public Pantalla3(CardLayout bloqueProductoLayout, JPanel contenedor) {
         Color fondoGris        = new Color(224, 224, 224);
@@ -233,39 +222,57 @@ public class Pantalla3 extends JPanel {
         return panel;
     }
 
-    /* Carga los datos de un producto en la pantalla, limpiando lo anterior */
-    public void cargarProducto(String nombre, String url, double precioActual, double variacion, double umbral) {
-        lblNombreProducto.setText(nombre);
-        lblUrl.setText(url);
-        lblPrecioActual.setText(String.format("%.2f €", precioActual));
-        lblVariacion.setText(String.format("%+.2f €", variacion));
-        lblUmbral.setText(String.format("%.2f €", umbral));
+    /* Carga los datos de un producto en la pantalla, leyendo todo desde el propio Producto */
+    public void cargarProducto(Producto p) {
+        lblNombreProducto.setText(p.getNombre());
+        lblUrl.setText(p.getEnlace());
+        lblUmbral.setText(String.format("%.2f €", p.getUmbral()));
 
-        historial.clear();
+        Double actual = p.getPrecioActual();
+        if (actual != null) {
+            lblPrecioActual.setText(String.format("%.2f €", actual));
+
+            /* La variación se calcula respecto al precio anterior, si lo hay */
+            ArrayList<Double> precios = p.getPrecios();
+            if (precios.size() >= 2) {
+                double anterior = precios.get(precios.size() - 2);
+                double variacion = actual - anterior;
+                lblVariacion.setText(String.format("%+.2f €", variacion));
+            } else {
+                lblVariacion.setText("—");
+            }
+        } else {
+            lblPrecioActual.setText("—");
+            lblVariacion.setText("—");
+        }
+
+        /* Reconstruye el historial: parejas (precio anterior → precio actual) */
         historialPanel.removeAll();
-        historialPanel.revalidate();
-        historialPanel.repaint();
-    }
-
-    /* Añade un registro al historial de precios y repinta */
-    public void agregarRegistroHistorial(RegistroPrecio r) {
-        historial.add(r);
-        historialPanel.add(crearFilaHistorial(r));
+        ArrayList<Double> precios = p.getPrecios();
+        ArrayList<LocalDateTime> fechas = p.getFechas();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        /* Se muestran del más reciente al más antiguo */
+        for (int i = precios.size() - 1; i >= 1; i--) {
+            String ts        = fechas.get(i).format(fmt);
+            double precioIni = precios.get(i - 1);
+            double precioFin = precios.get(i);
+            historialPanel.add(crearFilaHistorial(ts, precioIni, precioFin));
+        }
         historialPanel.revalidate();
         historialPanel.repaint();
     }
 
     /* Construye una fila del historial con timestamp, precio inicial y precio final */
-    private JPanel crearFilaHistorial(RegistroPrecio r) {
+    private JPanel crearFilaHistorial(String timestamp, double precioInicial, double precioFinal) {
         JPanel fila = new JPanel(new GridLayout(1, 3));
         fila.setOpaque(false);
         fila.setBorder(new EmptyBorder(10, 0, 10, 0));
         fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
         fila.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lblTimestamp = new JLabel(r.timestamp);
-        JLabel lblInicial   = new JLabel(String.format("%.2f €", r.precioInicial));
-        JLabel lblFinal     = new JLabel(String.format("%.2f €", r.precioFinal));
+        JLabel lblTimestamp = new JLabel(timestamp);
+        JLabel lblInicial   = new JLabel(String.format("%.2f €", precioInicial));
+        JLabel lblFinal     = new JLabel(String.format("%.2f €", precioFinal));
 
         for (JLabel l : new JLabel[]{lblTimestamp, lblInicial, lblFinal}) {
             l.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -276,37 +283,5 @@ public class Pantalla3 extends JPanel {
         fila.add(lblInicial);
         fila.add(lblFinal);
         return fila;
-    }
-
-    /* main para probar Pantalla3 de forma aislada */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Product Detail");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(820, 720);
-            frame.setLocationRelativeTo(null);
-
-            CardLayout cardLayout = new CardLayout();
-            JPanel contenedor = new JPanel(cardLayout);
-
-            Pantalla3 p3 = new Pantalla3(cardLayout, contenedor);
-            contenedor.add(p3, "pantalla3");
-            contenedor.add(new JLabel("Pantalla 2"), "pantalla2");
-
-            p3.cargarProducto(
-                    "Wireless Headphones Pro",
-                    "https://example-store.com/product/12345",
-                    119.99,
-                    -10.00,
-                    125.00
-            );
-            p3.agregarRegistroHistorial(new RegistroPrecio("2025-11-17", 129.99, 119.99));
-            p3.agregarRegistroHistorial(new RegistroPrecio("2025-11-16", 132.00, 125.00));
-            p3.agregarRegistroHistorial(new RegistroPrecio("2025-11-15", 135.00, 129.99));
-
-            cardLayout.show(contenedor, "pantalla3");
-            frame.add(contenedor);
-            frame.setVisible(true);
-        });
     }
 }
