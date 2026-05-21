@@ -197,6 +197,7 @@ public class Pantalla1 extends JPanel {
             }
 
             agente.solicitarScraping(url, nombre, umbral);
+            pantalla2.agregarProducto(new Producto(nombre, url, umbral));
             bloqueProductoLayout.show(contenedor, "pantalla2");
         });
 

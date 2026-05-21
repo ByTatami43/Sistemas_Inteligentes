@@ -7,6 +7,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Pantalla2 extends JPanel {
@@ -155,6 +156,23 @@ public class Pantalla2 extends JPanel {
         listaPanel.repaint();
     }
 
+    public void actualizarProductos(HashMap<String, Producto> productosActualizados) {
+        productos.clear();
+        productos.addAll(productosActualizados.values());
+
+        listaPanel.removeAll();
+        for (int i = 0; i < productos.size(); i++) {
+            if (i > 0) {
+                JSeparator sep = new JSeparator();
+                sep.setForeground(new Color(220, 220, 220));
+                sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+                listaPanel.add(sep);
+            }
+            listaPanel.add(crearFila(productos.get(i)));
+        }
+        listaPanel.revalidate();
+        listaPanel.repaint();
+    }
 
     /* Construye el panel de una fila con el nombre y el botón de acción */
     private JPanel crearFila(Producto p) {

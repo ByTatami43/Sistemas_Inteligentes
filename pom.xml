@@ -55,7 +55,7 @@
                         <argument>-gui</argument>
                         <argument>-agents</argument>
                         <!-- Modificar para arrancar los distintos agentes -->
-                        <argument>AgenteInterfaz:org.inteligentes.AgenteInterfaz;org.inteligentes.AgenteScrapper:org.inteligentes.AgenteScrapper;org.inteligentes.AgenteProcesamiento:org.inteligentes.AgenteProcesamiento</argument>
+                        <argument>AgenteInterfaz:org.inteligentes.AgenteInterfaz;AgenteScrapper:org.inteligentes.AgenteScrapper;AgenteProcesamiento:org.inteligentes.AgenteProcesamiento</argument>
                     </arguments>
                 </configuration>
             </plugin>

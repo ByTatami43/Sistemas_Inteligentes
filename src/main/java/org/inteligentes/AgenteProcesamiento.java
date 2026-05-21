@@ -60,7 +60,7 @@ public class AgenteProcesamiento extends Agent {
                         // enlace;nombre;umbral
                         String[] aux = msg.getContent().split(";");
                         if (!productos.containsKey(aux[0])) {
-                            productos.put(aux[0], new Producto(aux[1], aux[0], Double.parseDouble(aux[0])));
+                            productos.put(aux[0], new Producto(aux[1], aux[0], Double.parseDouble(aux[2])));
 
                             ACLMessage msgAux = new ACLMessage(ACLMessage.REQUEST);
                             AID agenteAID = buscarScrapperEnDF();
