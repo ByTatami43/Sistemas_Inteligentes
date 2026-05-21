@@ -2,8 +2,9 @@ package org.inteligentes;
 
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
-public class Producto {
+public class Producto implements Serializable{
 
     private String nombre;
     private String enlace;
