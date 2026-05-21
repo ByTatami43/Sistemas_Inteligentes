@@ -1,5 +1,6 @@
 package org.inteligentes.pantallas;
 
+import org.inteligentes.AgenteInterfaz;
 import org.inteligentes.Producto;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class Pantalla1 extends JPanel {
     private JButton botonAdd;
     private JButton botonVerLista;
 
-    public Pantalla1(CardLayout bloqueProductoLayout, JPanel contenedor, Pantalla2 pantalla2) {
+    public Pantalla1(CardLayout bloqueProductoLayout, JPanel contenedor, Pantalla2 pantalla2, AgenteInterfaz agente){
         Color fondoGris = new Color(224, 224, 224);
         Color colorGrisOscuro = new Color(51, 51, 51);
         Color colorTexto = new Color(153, 153, 153);
@@ -195,7 +196,7 @@ public class Pantalla1 extends JPanel {
                 return;
             }
 
-            pantalla2.agregarProducto(new Producto(nombre, url, umbral));
+            agente.solicitarScraping(url, nombre, umbral);
             bloqueProductoLayout.show(contenedor, "pantalla2");
         });
 
