@@ -60,24 +60,20 @@ public class AgenteInterfaz extends Agent {
             this.pantalla2 = pantalla2;
             this.pantalla3 = pantalla3;
         });
-        addBehaviour(new ActualizarGUI());
+        // Behaviour 1: escucha el SCRAPING de la GUI y manda REQUEST al procesamiento
         addBehaviour(new CyclicBehaviour() {
             public void action() {
                 MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
                 ACLMessage msg = myAgent.receive(mt);
                 if (msg != null && msg.getContent().startsWith("SCRAPING;")) {
                     String[] partes = msg.getContent().substring(9).split(";");
-                    String url    = partes[0];
-                    String nombre = partes[1];
-                    String umbral = partes[2];
-                    // Ahora SÍ estamos en el hilo del agente, podemos añadir behaviours
                     addBehaviour(new OneShotBehaviour() {
                         public void action() {
                             ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
                             request.addReceiver(new AID("AgenteProcesamiento", AID.ISLOCALNAME));
-                            request.setContent(url + ";" + nombre + ";" + umbral);
+                            request.setContent(partes[0] + ";" + partes[1] + ";" + partes[2]);
                             send(request);
-                            System.out.println("[Interfaz] Mensaje enviado a Procesamiento: " + request.getContent());
+                            System.out.println("[Interfaz] Enviado a Procesamiento: " + request.getContent());
                         }
                     });
                 } else {
@@ -85,6 +81,9 @@ public class AgenteInterfaz extends Agent {
                 }
             }
         });
+
+// Behaviour 2: escucha el INFORM del procesamiento con el HashMap serializado
+        addBehaviour(new ActualizarGUI());
     }
 
     public void solicitarScraping(String url, String nombre, double umbral) {
@@ -95,10 +94,10 @@ public class AgenteInterfaz extends Agent {
     }
 
 
-    class ActualizarGUI extends CyclicBehaviour{
+    class ActualizarGUI extends CyclicBehaviour {
         public void action() {
-            MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-            ACLMessage msg = blockingReceive(mt);
+            MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+            ACLMessage msg = myAgent.receive(mt);
             if (msg != null) {
                 try {
                     HashMap<String, Producto> productosActualizados =
@@ -109,6 +108,8 @@ public class AgenteInterfaz extends Agent {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else {
+                block();
             }
         }
     }
