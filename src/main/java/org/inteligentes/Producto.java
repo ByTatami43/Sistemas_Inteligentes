@@ -25,17 +25,10 @@ public class Producto implements Serializable{
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getEnlace() {
         return enlace;
     }
 
-    public void setEnlace(String enlace) {
-        this.enlace = enlace;
-    }
 
     public ArrayList<LocalDateTime> getFechas() {
         return new ArrayList<>(fechas);
@@ -43,10 +36,6 @@ public class Producto implements Serializable{
 
     public LocalDateTime ultimaFecha() {
         return fechas.isEmpty()?null:fechas.get(fechas.size() - 1);
-    }
-    //ESTO NO LO VEO NECESARIO SALVO PARA AÑADIR A MANO
-    public void setFecha(LocalDateTime fecha) {
-        fechas.add(fecha);
     }
 
     public ArrayList<Double> getPrecios() {
@@ -58,16 +47,12 @@ public class Producto implements Serializable{
     }
 
     public void setPrecioActual(Double precioActual) {
-        setFecha(LocalDateTime.now());
+        fechas.add(LocalDateTime.now());
         precios.add(precioActual);
     }
 
     public Double getUmbral() {
         return umbral;
-    }
-
-    public void setUmbral(Double umbral) {
-        this.umbral = umbral;
     }
 
     public boolean isAlerta(){

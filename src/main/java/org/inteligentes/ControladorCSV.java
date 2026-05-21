@@ -59,11 +59,11 @@ public class ControladorCSV {
                 // Si no existe el producto, lo creamos
                 if (!productos.containsKey(nombre)) {
                     Producto nuevo = new Producto(nombre, enlace, umbral);
-                    productos.put(nombre, nuevo);
+                    productos.put(enlace, nuevo);
                 }
 
                 // Añadimos la muestra histórica
-                productos.get(nombre).upProducto(fecha, precio);
+                productos.get(enlace).upProducto(fecha, precio);
             }
         } catch (IOException e) {
             System.out.println("[CSV] Error al cargar datos");
