@@ -19,9 +19,9 @@ public class AgenteScrapper extends Agent {
             browserContext = browser.newContext(new Browser.NewContextOptions());
 
             // ejemplos
-            scrapePrecio("https://www.pccomponentes.com/amd-ryzen-7-7800x3d-42-ghz-5-ghz");
-            scrapePrecio("https://www.pccomponentes.com/placa-base-asus-tuf-gaming-b850-plus-wifi");
-
+            scrapePrecio("https://www.ebay.es/p/20056257992?iid=318339191907");
+            scrapePrecio("https://www.ebay.es/p/14093762670?iid=800048876464");
+            scrapePrecio("https://www.ebay.es/p/21071474434?iid=257518067495");
         }
         public Double scrapePrecio(String enlace){
             Page page = browserContext.newPage();
@@ -30,16 +30,14 @@ public class AgenteScrapper extends Agent {
                 System.out.println("Iniciando la busqueda del precio");
                 page.navigate(enlace);
 
-                System.out.println("Título de la página cargada: " + page.title());
+                System.out.println("Titulo del producto: " + page.title());
 
-                String jsonText = page.locator("#microdata-product-script").textContent();
+                page.waitForSelector(".x-price-primary");
 
-                JSONObject json = new JSONObject(jsonText);
+                // Obtener texto
+                String resultado = page.locator(".x-price-primary").innerText();
 
-                String resultado = json
-                        .getJSONObject("offers")
-                        .getJSONObject("offers")
-                        .getString("price");
+                resultado = resultado.replace("USD", "").trim().replace(",",".");
 
                 System.out.println("Precio encontrado: " + resultado );
                 precio = Double.parseDouble(resultado);
