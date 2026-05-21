@@ -48,9 +48,9 @@ public class AgenteScrapper extends Agent {
             addBehaviour(new EscucharPeticiones());
 
             // ejemplos
-            scrapePrecio("https://www.ebay.es/p/20056257992?iid=318339191907");
-            scrapePrecio("https://www.ebay.es/p/14093762670?iid=800048876464");
-            scrapePrecio("https://www.ebay.es/p/21071474434?iid=257518067495");
+            //scrapePrecio("https://www.ebay.es/p/20056257992?iid=318339191907");
+            //scrapePrecio("https://www.ebay.es/p/14093762670?iid=800048876464");
+            //scrapePrecio("https://www.ebay.es/p/21071474434?iid=257518067495");
         }
         class EscucharPeticiones extends CyclicBehaviour{
             public void action() {

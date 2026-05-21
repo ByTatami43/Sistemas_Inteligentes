@@ -92,8 +92,9 @@ public class AgenteProcesamiento extends Agent {
                 if (msg != null) {
                     try {
                         // enlace;precio;enlace;precio... si precio -1, no se ha encontrado
+                        System.out.println(msg.getContent());
                         String[] aux = msg.getContent().split(";");
-                        for (int x = 0; x < aux.length; x += 2) {
+                        for (int x = 0; x < aux.length-1; x += 2) {
                             if (Double.parseDouble(aux[x + 1]) >= 0) {
                                 productos.get(aux[x]).setPrecioActual(Double.parseDouble(aux[x + 1]));
                                 csv.guardarEnCSV(productos.get(aux[x]));
@@ -176,8 +177,9 @@ public class AgenteProcesamiento extends Agent {
         StringBuilder aux = new StringBuilder();
         String[] auxL = productos.keySet().toArray(new String[productos.size()]);
         for (int i = 0; i < auxL.length; i++) {
-            aux.append(i != 0 ? ";" : "" + auxL[i]);
+            aux.append((i != 0 ? ";" : "") + auxL[i]);
         }
+        System.out.println(aux.toString());
         return aux.toString();
     }
 }

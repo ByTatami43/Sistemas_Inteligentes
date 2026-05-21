@@ -3,6 +3,7 @@ package org.inteligentes;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class ControladorCSV {
 
@@ -26,7 +27,7 @@ public class ControladorCSV {
     public void guardarEnCSV(Producto prod) {
         try (FileWriter fw = new FileWriter(CSV_FILE, true); BufferedWriter bw = new BufferedWriter(fw)) {
             String nombreLimpio = prod.getNombre().replace(";", " ");
-            bw.write(String.format("%s;%s;%s;%.2f;%.2f\n", nombreLimpio, prod.ultimaFecha(), prod.getEnlace(),
+            bw.write(String.format(Locale.US,"%s;%s;%s;%.2f;%.2f\n", nombreLimpio, prod.ultimaFecha(), prod.getEnlace(),
                     prod.getUmbral(), prod.getPrecioActual()));
         } catch (IOException e) {
             System.out.println("[CSV] Error al escribir el nuevo precio");
@@ -55,9 +56,9 @@ public class ControladorCSV {
                 String enlace = partes[2];
                 Double umbral = Double.parseDouble(partes[3]);
                 Double precio = Double.parseDouble(partes[4]);
-
+                
                 // Si no existe el producto, lo creamos
-                if (!productos.containsKey(nombre)) {
+                if (!productos.containsKey(enlace)) {
                     Producto nuevo = new Producto(nombre, enlace, umbral);
                     productos.put(enlace, nuevo);
                 }
