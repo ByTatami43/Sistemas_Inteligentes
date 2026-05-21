@@ -62,7 +62,7 @@ public class AgenteScrapper extends Agent {
                     String mensaje = msg.getContent();
                     System.out.println("Mensaje recibido iniciando scrapping de " + mensaje);
 
-                    String[] enlaces = mensaje.split(",");
+                    String[] enlaces = mensaje.split(";");
                     StringBuilder respuesta = new StringBuilder();
 
                     for(String enlace: enlaces) {
