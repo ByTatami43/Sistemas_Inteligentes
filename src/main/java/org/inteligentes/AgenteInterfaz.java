@@ -56,10 +56,4 @@ public class AgenteInterfaz extends Agent {
         });
     }
 
-    // El behaviour de recepción llama a este método para actualizar la GUI
-    public void actualizarProducto(String url, String estado, double precio) {
-        SwingUtilities.invokeLater(() -> {
-            pantalla2.actualizarAlerta(url, estado.equals("ALERTA"));
-        });
-    }
 }

@@ -155,27 +155,6 @@ public class Pantalla2 extends JPanel {
         listaPanel.repaint();
     }
 
-    /* Cambia el estado de alerta de un producto y reconstruye toda la lista */
-    public void actualizarAlerta(String url, boolean alerta) {
-        for (Producto p : productos) {
-            if (p.getEnlace().equals(url)) {
-                p.setAlerta(alerta);
-                break;
-            }
-        }
-        listaPanel.removeAll();
-        for (int i = 0; i < productos.size(); i++) {
-            if (i > 0) {
-                JSeparator sep = new JSeparator();
-                sep.setForeground(new Color(220, 220, 220));
-                sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-                listaPanel.add(sep);
-            }
-            listaPanel.add(crearFila(productos.get(i)));
-        }
-        listaPanel.revalidate();
-        listaPanel.repaint();
-    }
 
     /* Construye el panel de una fila con el nombre y el botón de acción */
     private JPanel crearFila(Producto p) {
