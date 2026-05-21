@@ -70,7 +70,7 @@ public class AgenteScrapper extends Agent {
                             Double precio = scrapePrecio(enlace);
 
                             // hacemos una lista tipo 10.2;12.2;...
-                            respuesta.append(precio).append(";");
+                            respuesta.append(enlace).append(";").append(precio).append(";");
                         }
                     }
 
