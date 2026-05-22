@@ -57,17 +57,30 @@ public class AgenteProcesamiento extends Agent {
                 ACLMessage msg = myAgent.receive(mt);
                 if (msg != null) {
                     try {
-                        // enlace;nombre;umbral
-                        String[] aux = msg.getContent().split(";");
-                        if (!productos.containsKey(aux[0])) {
-                            productos.put(aux[0], new Producto(aux[1], aux[0], Double.parseDouble(aux[2])));
+                        if (msg.getContent().equals("ACTUALIZAR")) {
+                            ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
+                            inform.addReceiver(buscarInterfazEnDF());
+                            inform.setContentObject(new HashMap<>(productos));
+                            send(inform);
+                        } else {
+                            // enlace;nombre;umbral
+                            String[] aux = msg.getContent().split(";");
+                            if (!productos.containsKey(aux[0])) {
+                                productos.put(aux[0], new Producto(aux[1], aux[0], Double.parseDouble(aux[2])));
 
-                            ACLMessage msgAux = new ACLMessage(ACLMessage.REQUEST);
-                            AID agenteAID = buscarScrapperEnDF();
-                            msgAux.addReceiver(agenteAID);
-                            //mando enlace
-                            msgAux.setContent(aux[0]);
-                            send(msgAux);
+                                // manda el scrapper a buscar el precio
+                                ACLMessage msgAux = new ACLMessage(ACLMessage.REQUEST);
+                                AID agenteAID = buscarScrapperEnDF();
+                                msgAux.addReceiver(agenteAID);
+                                msgAux.setContent(aux[0]);
+                                send(msgAux);
+
+                                // manda ya el HashMap actualizado a la interfaz aunque sin precio
+                                ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
+                                inform.addReceiver(buscarInterfazEnDF());
+                                inform.setContentObject(new HashMap<>(productos));
+                                send(inform);
+                            }
                         }
                     } catch (Exception e) {
                         System.out.println("[Procesamiento] Error al enviar el mensaje");
@@ -82,7 +95,6 @@ public class AgenteProcesamiento extends Agent {
             }
         }
     }
-
     private class RecibirActualizacionScrapper extends CyclicBehaviour {
         @Override
         public void action() {

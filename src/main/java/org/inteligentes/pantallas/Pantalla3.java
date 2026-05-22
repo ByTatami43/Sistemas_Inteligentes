@@ -25,7 +25,6 @@ public class Pantalla3 extends JPanel {
         Color colorLinea       = new Color(220, 220, 220);
         Color colorEtiqueta    = new Color(120, 120, 120);
         Color colorTextoNombre = new Color(50, 80, 140);
-        Color colorMorado      = new Color(140, 70, 220);
 
         setBackground(fondoGris);
         setLayout(new GridBagLayout());
@@ -61,25 +60,6 @@ public class Pantalla3 extends JPanel {
         bloqueProducto.setBorder(new EmptyBorder(25, 30, 25, 30));
         bloqueProducto.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        /* Botón morado decorativo de cabecera con el título de la app */
-        JLabel tituloApp = new JLabel("Price Scraper", SwingConstants.CENTER) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-                g2.dispose();
-                super.paintComponent(g);
-            }
-        };
-        tituloApp.setOpaque(false);
-        tituloApp.setBackground(colorMorado);
-        tituloApp.setForeground(Color.WHITE);
-        tituloApp.setFont(new Font("SansSerif", Font.BOLD, 14));
-        tituloApp.setMaximumSize(new Dimension(180, 40));
-        tituloApp.setPreferredSize(new Dimension(180, 40));
-        tituloApp.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         /* Etiqueta y campo de URL */
         JLabel lblUrlTitulo = new JLabel("URL", SwingConstants.CENTER);
@@ -126,22 +106,20 @@ public class Pantalla3 extends JPanel {
         preciosPanel.add(bloquePrecio("Umbral",        lblUmbral,       colorEtiqueta, colorGrisOscuro));
 
         /* Cabecera de la tabla de historial */
-        JPanel headerHistorial = new JPanel(new GridLayout(1, 3));
+        JPanel headerHistorial = new JPanel(new GridLayout(1, 2));
         headerHistorial.setOpaque(false);
         headerHistorial.setBorder(new EmptyBorder(8, 0, 8, 0));
         headerHistorial.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         headerHistorial.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel hTimestamp = new JLabel("Timestamp");
-        JLabel hInicial   = new JLabel("Initial Price");
-        JLabel hFinal     = new JLabel("Final Price");
-        for (JLabel l : new JLabel[]{hTimestamp, hInicial, hFinal}) {
+        JLabel hInicial   = new JLabel("Precio");
+        for (JLabel l : new JLabel[]{hTimestamp, hInicial}) {
             l.setFont(new Font("SansSerif", Font.BOLD, 13));
             l.setForeground(colorGrisOscuro);
         }
         headerHistorial.add(hTimestamp);
         headerHistorial.add(hInicial);
-        headerHistorial.add(hFinal);
 
         /* Separador debajo de la cabecera */
         JSeparator sepHeader = new JSeparator();
@@ -156,7 +134,7 @@ public class Pantalla3 extends JPanel {
         historialPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         /* Botón para volver a la pantalla de la lista de productos */
-        JButton botonVolver = new JButton("Back to Product List") {
+        JButton botonVolver = new JButton("Volver a la lista de productos") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -185,7 +163,6 @@ public class Pantalla3 extends JPanel {
         botonVolver.addActionListener(e -> bloqueProductoLayout.show(contenedor, "pantalla2"));
 
         /* Ensamblado del contenido dentro del bloque blanco */
-        bloqueProducto.add(tituloApp);
         bloqueProducto.add(lblUrlTitulo);
         bloqueProducto.add(lblUrl);
         bloqueProducto.add(lblProductTitulo);
@@ -253,17 +230,16 @@ public class Pantalla3 extends JPanel {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         /* Se muestran del más reciente al más antiguo */
         for (int i = precios.size() - 1; i >= 1; i--) {
-            String ts        = fechas.get(i).format(fmt);
+            String ts = fechas.get(i).format(fmt);
             double precioIni = precios.get(i - 1);
-            double precioFin = precios.get(i);
-            historialPanel.add(crearFilaHistorial(ts, precioIni, precioFin));
+            historialPanel.add(crearFilaHistorial(ts, precioIni));
         }
         historialPanel.revalidate();
         historialPanel.repaint();
     }
 
     /* Construye una fila del historial con timestamp, precio inicial y precio final */
-    private JPanel crearFilaHistorial(String timestamp, double precioInicial, double precioFinal) {
+    private JPanel crearFilaHistorial(String timestamp, double precioInicial) {
         JPanel fila = new JPanel(new GridLayout(1, 3));
         fila.setOpaque(false);
         fila.setBorder(new EmptyBorder(10, 0, 10, 0));
@@ -272,16 +248,14 @@ public class Pantalla3 extends JPanel {
 
         JLabel lblTimestamp = new JLabel(timestamp);
         JLabel lblInicial   = new JLabel(String.format("%.2f €", precioInicial));
-        JLabel lblFinal     = new JLabel(String.format("%.2f €", precioFinal));
 
-        for (JLabel l : new JLabel[]{lblTimestamp, lblInicial, lblFinal}) {
+        for (JLabel l : new JLabel[]{lblTimestamp, lblInicial}) {
             l.setFont(new Font("SansSerif", Font.PLAIN, 13));
             l.setForeground(new Color(60, 60, 60));
         }
 
         fila.add(lblTimestamp);
         fila.add(lblInicial);
-        fila.add(lblFinal);
         return fila;
     }
 }

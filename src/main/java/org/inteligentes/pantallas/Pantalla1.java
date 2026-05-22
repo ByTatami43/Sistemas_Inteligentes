@@ -188,6 +188,12 @@ public class Pantalla1 extends JPanel {
                 return;
             }
 
+            // Comprobamos si el enlace ya existe en pantalla2
+            if (pantalla2.contieneEnlace(url)) {
+                JOptionPane.showMessageDialog(this, "Este producto ya está en la lista.");
+                return;
+            }
+
             double umbral;
             try {
                 umbral = Double.parseDouble(precio.replace(",", "."));
@@ -197,7 +203,6 @@ public class Pantalla1 extends JPanel {
             }
 
             agente.solicitarScraping(url, nombre, umbral);
-            pantalla2.agregarProducto(new Producto(nombre, url, umbral));
             bloqueProductoLayout.show(contenedor, "pantalla2");
         });
 
@@ -243,7 +248,10 @@ public class Pantalla1 extends JPanel {
             public void mouseEntered(MouseEvent e) { botonVerLista.setBackground(new Color(68, 68, 68)); }
             public void mouseExited(MouseEvent e)  { botonVerLista.setBackground(colorGrisOscuro); }
         });
-        botonVerLista.addActionListener(e -> bloqueProductoLayout.show(contenedor, "pantalla2"));
+        botonVerLista.addActionListener(e -> {
+            bloqueProductoLayout.show(contenedor, "pantalla2");
+            agente.solicitarActualizacion();
+        });
 
         JPanel btnListaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnListaPanel.setBackground(fondoGris);

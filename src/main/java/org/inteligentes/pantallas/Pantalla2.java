@@ -157,11 +157,14 @@ public class Pantalla2 extends JPanel {
     }
 
     public void actualizarProductos(HashMap<String, Producto> productosActualizados) {
+        System.out.println("[Pantalla2] actualizarProductos llamado con " + productosActualizados.size() + " productos");
         productos.clear();
         productos.addAll(productosActualizados.values());
+        System.out.println("[Pantalla2] productos en lista: " + productos.size());
 
         listaPanel.removeAll();
         for (int i = 0; i < productos.size(); i++) {
+            System.out.println("[Pantalla2] pintando producto: " + productos.get(i).getNombre());
             if (i > 0) {
                 JSeparator sep = new JSeparator();
                 sep.setForeground(new Color(220, 220, 220));
@@ -172,6 +175,7 @@ public class Pantalla2 extends JPanel {
         }
         listaPanel.revalidate();
         listaPanel.repaint();
+        System.out.println("[Pantalla2] repintado completado");
     }
 
     /* Construye el panel de una fila con el nombre y el botón de acción */
@@ -181,7 +185,12 @@ public class Pantalla2 extends JPanel {
         fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 56));
         fila.setBorder(new EmptyBorder(14, 20, 14, 20));
 
-        JLabel lblNombre = new JLabel(p.getNombre());
+        // muestra el nombre y el precio actual si lo tiene
+        String texto = p.getNombre();
+        if (p.getPrecioActual() != null) {
+            texto += String.format("  (%.2f €)", p.getPrecioActual());
+        }
+        JLabel lblNombre = new JLabel(texto);
         lblNombre.setFont(new Font("SansSerif", Font.PLAIN, 14));
         lblNombre.setForeground(new Color(50, 80, 140));
 
@@ -193,12 +202,13 @@ public class Pantalla2 extends JPanel {
 
     /* Crea el botón de acción de cada fila, rojo si hay alerta, azul si no */
     private JButton crearBotonFila(Producto p) {
+        int indice = productos.indexOf(p);
         boolean alerta = p.isAlerta();
         String texto   = alerta ? "ALERT" : "View Item";
-        Color colorBtn = alerta ? new Color(210, 45, 45) : new Color(52, 120, 210);
+        Color colorAlerta = alerta ? new Color(210, 45, 45) : new Color(52, 120, 210);
         Color hover    = alerta ? new Color(180, 30, 30) : new Color(30, 90, 170);
 
-        JButton btn = new JButton(texto) {
+        JButton botonVer = new JButton(texto) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -209,25 +219,29 @@ public class Pantalla2 extends JPanel {
                 super.paintComponent(g);
             }
         };
-        btn.setContentAreaFilled(false);
-        btn.setBackground(colorBtn);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
-        btn.setPreferredSize(new Dimension(100, 32));
+        botonVer.setContentAreaFilled(false);
+        botonVer.setBackground(colorAlerta);
+        botonVer.setForeground(Color.WHITE);
+        botonVer.setFocusPainted(false);
+        botonVer.setBorderPainted(false);
+        botonVer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        botonVer.setFont(new Font("SansSerif", Font.BOLD, 12));
+        botonVer.setPreferredSize(new Dimension(100, 32));
         /* Cuando el raton pasa por encima se oscurece ligeramente */
-        btn.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { btn.setBackground(hover); }
-            public void mouseExited(MouseEvent e)  { btn.setBackground(colorBtn); }
+        botonVer.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) { botonVer.setBackground(hover); }
+            public void mouseExited(MouseEvent e)  { botonVer.setBackground(colorAlerta); }
         });
         /* Al pulsar carga el producto en Pantalla3 y navega a ella */
-        btn.addActionListener(e -> {
+        botonVer.addActionListener(e -> {
+            pantalla3.cargarProducto(productos.get(indice));
             pantalla3.cargarProducto(p);
             bloqueProductoLayout.show(contenedor, "pantalla3");
         });
 
-        return btn;
+        return botonVer;
+    }
+    public boolean contieneEnlace(String url) {
+        return productos.stream().anyMatch(p -> p.getEnlace().equals(url));
     }
 }

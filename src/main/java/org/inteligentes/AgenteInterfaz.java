@@ -65,17 +65,28 @@ public class AgenteInterfaz extends Agent {
             public void action() {
                 MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
                 ACLMessage msg = myAgent.receive(mt);
-                if (msg != null && msg.getContent().startsWith("SCRAPING;")) {
-                    String[] partes = msg.getContent().substring(9).split(";");
-                    addBehaviour(new OneShotBehaviour() {
-                        public void action() {
-                            ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
-                            request.addReceiver(new AID("AgenteProcesamiento", AID.ISLOCALNAME));
-                            request.setContent(partes[0] + ";" + partes[1] + ";" + partes[2]);
-                            send(request);
-                            System.out.println("[Interfaz] Enviado a Procesamiento: " + request.getContent());
-                        }
-                    });
+                if (msg != null) {
+                    if (msg.getContent().startsWith("SCRAPING;")) {
+                        String[] partes = msg.getContent().substring(9).split(";");
+                        addBehaviour(new OneShotBehaviour() {
+                            public void action() {
+                                ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+                                request.addReceiver(new AID("AgenteProcesamiento", AID.ISLOCALNAME));
+                                request.setContent(partes[0] + ";" + partes[1] + ";" + partes[2]);
+                                send(request);
+                                System.out.println("[Interfaz] Enviado a Procesamiento: " + request.getContent());
+                            }
+                        });
+                    } else if (msg.getContent().equals("ACTUALIZAR")) {
+                        addBehaviour(new OneShotBehaviour() {
+                            public void action() {
+                                ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+                                request.addReceiver(new AID("AgenteProcesamiento", AID.ISLOCALNAME));
+                                request.setContent("ACTUALIZAR");
+                                send(request);
+                            }
+                        });
+                    }
                 } else {
                     block();
                 }
@@ -93,6 +104,12 @@ public class AgenteInterfaz extends Agent {
         send(msg); // send() es thread-safe
     }
 
+    public void solicitarActualizacion() {
+        ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+        msg.addReceiver(getAID());
+        msg.setContent("ACTUALIZAR");
+        send(msg);
+    }
 
     class ActualizarGUI extends CyclicBehaviour {
         public void action() {
