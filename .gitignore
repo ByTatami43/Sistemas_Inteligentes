@@ -4,7 +4,6 @@ target/
 !**/src/test/**/target/
 .kotlin
 APDescription.txt
-historial_precios.csv
 MTPs-Main-Container.txt
 ### IntelliJ IDEA ###
 .idea/modules.xml

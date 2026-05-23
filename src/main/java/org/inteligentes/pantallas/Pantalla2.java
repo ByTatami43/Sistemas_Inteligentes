@@ -45,7 +45,7 @@ public class Pantalla2 extends JPanel {
         centerBlock.setBackground(fondoGris);
 
         /* Título de la pantalla */
-        JLabel titulo = new JLabel("Product List");
+        JLabel titulo = new JLabel("Lista de productos");
         titulo.setFont(new Font("SansSerif", Font.BOLD, 26));
         titulo.setForeground(colorGrisOscuro);
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -73,11 +73,11 @@ public class Pantalla2 extends JPanel {
         header.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         header.setBorder(new EmptyBorder(12, 20, 12, 20));
 
-        JLabel lblProduct = new JLabel("Product");
+        JLabel lblProduct = new JLabel("Producto");
         lblProduct.setFont(new Font("SansSerif", Font.BOLD, 13));
         lblProduct.setForeground(colorGrisOscuro);
 
-        JLabel lblAction = new JLabel("Action");
+        JLabel lblAction = new JLabel("Acción");
         lblAction.setFont(new Font("SansSerif", Font.BOLD, 13));
         lblAction.setForeground(colorGrisOscuro);
 
@@ -100,7 +100,7 @@ public class Pantalla2 extends JPanel {
         bloqueProducto.add(listaPanel);
 
         /* Botón para volver a la pantalla de añadir producto */
-        JButton botonVolver = new JButton("Back to Home") {
+        JButton botonVolver = new JButton("Volver") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -204,7 +204,7 @@ public class Pantalla2 extends JPanel {
     private JButton crearBotonFila(Producto p) {
         int indice = productos.indexOf(p);
         boolean alerta = p.isAlerta();
-        String texto   = alerta ? "ALERT" : "View Item";
+        String texto   = alerta ? "ALERTA" : "Ver";
         Color colorAlerta = alerta ? new Color(210, 45, 45) : new Color(52, 120, 210);
         Color hover    = alerta ? new Color(180, 30, 30) : new Color(30, 90, 170);
 

@@ -6,9 +6,20 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Ellipse2D;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.ValueMarker;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 public class Pantalla3 extends JPanel {
 
@@ -18,6 +29,9 @@ public class Pantalla3 extends JPanel {
     private final JLabel lblVariacion;
     private final JLabel lblUmbral;
     private final JPanel historialPanel;
+    private final ChartPanel panelGrafica;
+
+    // ELIMINAMOS offsetIzq porque la propia gráfica empujará el contenido
 
     public Pantalla3(CardLayout bloqueProductoLayout, JPanel contenedor) {
         Color fondoGris        = new Color(224, 224, 224);
@@ -33,17 +47,17 @@ public class Pantalla3 extends JPanel {
         JPanel centerBlock = new JPanel() {
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(700, super.getPreferredSize().height);
+                return new Dimension(800, super.getPreferredSize().height);
             }
             @Override
             public Dimension getMaximumSize() {
-                return new Dimension(700, Integer.MAX_VALUE);
+                return new Dimension(800, Integer.MAX_VALUE);
             }
         };
         centerBlock.setLayout(new BoxLayout(centerBlock, BoxLayout.Y_AXIS));
         centerBlock.setBackground(fondoGris);
 
-        /* El recuadro blanco que agrupa todo el contenido de la pantalla */
+        /* El recuadro blanco principal */
         JPanel bloqueProducto = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -60,13 +74,12 @@ public class Pantalla3 extends JPanel {
         bloqueProducto.setBorder(new EmptyBorder(25, 30, 25, 30));
         bloqueProducto.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
-        /* Etiqueta y campo de URL */
+        // URL
         JLabel lblUrlTitulo = new JLabel("URL", SwingConstants.CENTER);
         lblUrlTitulo.setFont(new Font("SansSerif", Font.PLAIN, 13));
         lblUrlTitulo.setForeground(colorEtiqueta);
         lblUrlTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblUrlTitulo.setBorder(new EmptyBorder(20, 0, 5, 0));
+        lblUrlTitulo.setBorder(new EmptyBorder(0, 0, 5, 650));
 
         lblUrl = new JLabel("");
         lblUrl.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -78,19 +91,42 @@ public class Pantalla3 extends JPanel {
         lblUrl.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblUrl.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        /* Etiqueta y nombre del producto */
-        JLabel lblProductTitulo = new JLabel("Product");
+        // PAnel divisor
+        JPanel panelDivisor = new JPanel();
+        panelDivisor.setLayout(new BoxLayout(panelDivisor, BoxLayout.X_AXIS));
+        panelDivisor.setOpaque(false);
+        panelDivisor.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+        // grafica
+        panelGrafica = new ChartPanel(null);
+        panelGrafica.setOpaque(false);
+        panelGrafica.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        panelGrafica.setPreferredSize(new Dimension(250, 250));
+        panelGrafica.setMinimumSize(new Dimension(250, 250));
+        panelGrafica.setMaximumSize(new Dimension(350, 400));
+        panelGrafica.setAlignmentY(Component.TOP_ALIGNMENT); // Para que se alinee arriba con el texto
+
+
+
+        // panel detalles para los detalles
+        JPanel panelDetalles = new JPanel();
+        panelDetalles.setLayout(new BoxLayout(panelDetalles, BoxLayout.Y_AXIS));
+        panelDetalles.setOpaque(false);
+        panelDetalles.setAlignmentY(Component.TOP_ALIGNMENT); // Para que se alinee arriba con la gráfica
+
+        /* Componentes de la columna derecha (sin offsetIzq) */
+        JLabel lblProductTitulo = new JLabel("Producto");
         lblProductTitulo.setFont(new Font("SansSerif", Font.PLAIN, 13));
         lblProductTitulo.setForeground(colorEtiqueta);
         lblProductTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblProductTitulo.setBorder(new EmptyBorder(20, 0, 5, 0));
+        lblProductTitulo.setBorder(new EmptyBorder(0, 0, 5, 0));
 
         lblNombreProducto = new JLabel("—");
         lblNombreProducto.setFont(new Font("SansSerif", Font.PLAIN, 14));
         lblNombreProducto.setForeground(colorTextoNombre);
         lblNombreProducto.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        /* Fila con los tres bloques de precio: Precio Actual, Variación y Umbral */
         JPanel preciosPanel = new JPanel(new GridLayout(1, 3, 20, 0));
         preciosPanel.setOpaque(false);
         preciosPanel.setBorder(new EmptyBorder(20, 0, 20, 0));
@@ -105,7 +141,6 @@ public class Pantalla3 extends JPanel {
         preciosPanel.add(bloquePrecio("Variación",     lblVariacion,    colorEtiqueta, colorGrisOscuro));
         preciosPanel.add(bloquePrecio("Umbral",        lblUmbral,       colorEtiqueta, colorGrisOscuro));
 
-        /* Cabecera de la tabla de historial */
         JPanel headerHistorial = new JPanel(new GridLayout(1, 2));
         headerHistorial.setOpaque(false);
         headerHistorial.setBorder(new EmptyBorder(8, 0, 8, 0));
@@ -121,19 +156,46 @@ public class Pantalla3 extends JPanel {
         headerHistorial.add(hTimestamp);
         headerHistorial.add(hInicial);
 
-        /* Separador debajo de la cabecera */
-        JSeparator sepHeader = new JSeparator();
-        sepHeader.setForeground(colorLinea);
-        sepHeader.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        sepHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JPanel sepWrapper = new JPanel(new BorderLayout());
+        sepWrapper.setOpaque(false);
+        sepWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        sepWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JSeparator lineaReal = new JSeparator();
+        lineaReal.setForeground(colorLinea);
+        sepWrapper.add(lineaReal, BorderLayout.CENTER);
 
-        /* Panel del historial de precios que crece con cada registro */
         historialPanel = new JPanel();
         historialPanel.setLayout(new BoxLayout(historialPanel, BoxLayout.Y_AXIS));
         historialPanel.setOpaque(false);
         historialPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        /* Botón para volver a la pantalla de la lista de productos */
+        JScrollPane scrollHistorial = new JScrollPane(historialPanel);
+        scrollHistorial.setOpaque(false);
+        scrollHistorial.getViewport().setOpaque(false);
+        scrollHistorial.setBorder(new EmptyBorder(0, 0, 0, 0));
+        scrollHistorial.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollHistorial.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollHistorial.getVerticalScrollBar().setUnitIncrement(16);
+        scrollHistorial.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+        scrollHistorial.setPreferredSize(new Dimension(400, 150));
+        scrollHistorial.setMinimumSize(new Dimension(400, 100));
+        scrollHistorial.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Añadimos al panel de la derecha
+        panelDetalles.add(lblProductTitulo);
+        panelDetalles.add(lblNombreProducto);
+        panelDetalles.add(preciosPanel);
+        panelDetalles.add(headerHistorial);
+        panelDetalles.add(sepWrapper);
+        panelDetalles.add(scrollHistorial);
+
+        // Añadimos las dos columnas al panel divisor central
+        panelDivisor.add(panelGrafica);
+        panelDivisor.add(Box.createHorizontalStrut(30)); // 30px de margen entre grafica y textos
+        panelDivisor.add(panelDetalles);
+
+
+        // Boton para volver
         JButton botonVolver = new JButton("Volver a la lista de productos") {
             @Override
             protected void paintComponent(Graphics g) {
@@ -154,23 +216,20 @@ public class Pantalla3 extends JPanel {
         botonVolver.setFont(new Font("SansSerif", Font.BOLD, 13));
         botonVolver.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         botonVolver.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonVolver.setBorder(new EmptyBorder(0, 0, 0, 0));
-        /* Cuando el raton pasa por encima se pone mas claro el recuadro */
+
         botonVolver.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) { botonVolver.setBackground(new Color(68, 68, 68)); }
             public void mouseExited(MouseEvent e)  { botonVolver.setBackground(colorGrisOscuro); }
         });
         botonVolver.addActionListener(e -> bloqueProductoLayout.show(contenedor, "pantalla2"));
 
-        /* Ensamblado del contenido dentro del bloque blanco */
+        // ponemos ya junto
         bloqueProducto.add(lblUrlTitulo);
         bloqueProducto.add(lblUrl);
-        bloqueProducto.add(lblProductTitulo);
-        bloqueProducto.add(lblNombreProducto);
-        bloqueProducto.add(preciosPanel);
-        bloqueProducto.add(headerHistorial);
-        bloqueProducto.add(sepHeader);
-        bloqueProducto.add(historialPanel);
+        bloqueProducto.add(Box.createVerticalStrut(25)); // Espacio entre URL y columnas
+
+        bloqueProducto.add(panelDivisor); // Añadimos el bloque que contiene la gráfica y los textos
+
         bloqueProducto.add(Box.createVerticalStrut(25));
         bloqueProducto.add(botonVolver);
 
@@ -178,7 +237,6 @@ public class Pantalla3 extends JPanel {
         add(centerBlock);
     }
 
-    /* Construye uno de los tres bloques de precio (etiqueta arriba, valor abajo) */
     private JPanel bloquePrecio(String titulo, JLabel valor, Color colorEtiqueta, Color colorValor) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -199,7 +257,6 @@ public class Pantalla3 extends JPanel {
         return panel;
     }
 
-    /* Carga los datos de un producto en la pantalla, leyendo todo desde el propio Producto */
     public void cargarProducto(Producto p) {
         lblNombreProducto.setText(p.getNombre());
         lblUrl.setText(p.getEnlace());
@@ -208,8 +265,6 @@ public class Pantalla3 extends JPanel {
         Double actual = p.getPrecioActual();
         if (actual != null) {
             lblPrecioActual.setText(String.format("%.2f €", actual));
-
-            /* La variación se calcula respecto al precio anterior, si lo hay */
             ArrayList<Double> precios = p.getPrecios();
             if (precios.size() >= 2) {
                 double anterior = precios.get(precios.size() - 2);
@@ -223,12 +278,10 @@ public class Pantalla3 extends JPanel {
             lblVariacion.setText("—");
         }
 
-        /* Reconstruye el historial: parejas (precio anterior → precio actual) */
         historialPanel.removeAll();
         ArrayList<Double> precios = p.getPrecios();
         ArrayList<LocalDateTime> fechas = p.getFechas();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        /* Se muestran del más reciente al más antiguo */
         for (int i = precios.size() - 1; i >= 1; i--) {
             String ts = fechas.get(i).format(fmt);
             double precioIni = precios.get(i - 1);
@@ -236,11 +289,73 @@ public class Pantalla3 extends JPanel {
         }
         historialPanel.revalidate();
         historialPanel.repaint();
+
+        // grafica
+        // 1. Grafica
+        XYSeries serie = new XYSeries("PRECIO");
+
+        for (int i = 0; i < precios.size(); i++) {
+            serie.add(i, precios.get(i));
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(serie);
+        JFreeChart chart = ChartFactory.createXYLineChart(null,null, null,
+                dataset, PlotOrientation.VERTICAL, false, true, false);
+        // obtenemos el plot
+        XYPlot plot = chart.getXYPlot();
+        // quitamos los fondos del plot
+        plot.setBackgroundPaint(Color.WHITE);
+        chart.setBackgroundPaint(Color.WHITE);
+        plot.setOutlineVisible(false);
+        plot.setDomainGridlinesVisible(false);
+        plot.setRangeGridlinesVisible(false);
+        // quitamos los ejes
+        plot.getDomainAxis().setVisible(false);
+        plot.getRangeAxis().setVisible(false);
+        // estilo linea azul
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        renderer.setSeriesPaint(0, new Color(135, 206, 235));
+        renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+        renderer.setSeriesShapesVisible(0, true);
+        renderer.setSeriesShape(0, new Ellipse2D.Double(-4.0, -4.0, 8.0, 8.0));
+        plot.setRenderer(renderer);
+        // linea negra (UMBRAL)
+        double precioUmbral = p.getUmbral();
+        ValueMarker marker = new ValueMarker(precioUmbral);
+        System.out.println(p.getUmbral());
+        marker.setPaint(Color.BLACK); // Color de la línea punteada
+        float[] dashPattern = {10.0f, 10.0f};
+        marker.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dashPattern, 0.0f));
+        plot.addRangeMarker(marker);
+        double maximaDistancia = 0.0;
+        for (Double precio : precios) {
+            double distancia = Math.abs(precio - precioUmbral);
+            if (distancia > maximaDistancia) {
+                maximaDistancia = distancia;
+            }
+        }
+        if (maximaDistancia == 0.0) {
+            maximaDistancia = 1.0; // Por si todos los precios son exactamente iguales al umbral
+        } else {
+            maximaDistancia = maximaDistancia * 1.1;
+        }
+
+        // 3. Obligamos al eje Y a ser perfectamente simétrico respecto al umbral
+        double limiteInferior = precioUmbral - maximaDistancia;
+        double limiteSuperior = precioUmbral + maximaDistancia;
+
+        NumberAxis yAxis = (org.jfree.chart.axis.NumberAxis) plot.getRangeAxis();
+        yAxis.setAutoRange(false); // Apagamos el zoom automático
+        yAxis.setRange(limiteInferior, limiteSuperior); // Centramos la cámara
+        panelGrafica.setChart(chart);
+
+
+        this.revalidate();
     }
 
-    /* Construye una fila del historial con timestamp, precio inicial y precio final */
     private JPanel crearFilaHistorial(String timestamp, double precioInicial) {
-        JPanel fila = new JPanel(new GridLayout(1, 3));
+        JPanel fila = new JPanel(new GridLayout(1, 2));
         fila.setOpaque(false);
         fila.setBorder(new EmptyBorder(10, 0, 10, 0));
         fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
