@@ -1,5 +1,6 @@
 package org.inteligentes.pantallas;
 
+import org.inteligentes.AgenteInterfaz;
 import org.inteligentes.Producto;
 
 import javax.swing.*;
@@ -17,12 +18,12 @@ public class Pantalla2 extends JPanel {
     private final Pantalla3 pantalla3;
     private final CardLayout bloqueProductoLayout;
     private final JPanel contenedor;
-
-    public Pantalla2(CardLayout bloqueProductoLayout, JPanel contenedor, Pantalla3 pantalla3) {
+    private AgenteInterfaz agenteInterfaz;
+    public Pantalla2(CardLayout bloqueProductoLayout, JPanel contenedor, Pantalla3 pantalla3, AgenteInterfaz agente) {
         this.pantalla3 = pantalla3;
         this.bloqueProductoLayout = bloqueProductoLayout;
         this.contenedor = contenedor;
-
+        this.agenteInterfaz = agente;
         Color fondoGris       = new Color(224, 224, 224);
         Color colorGrisOscuro = new Color(51, 51, 51);
         Color colorLinea      = new Color(220, 220, 220);
@@ -234,8 +235,8 @@ public class Pantalla2 extends JPanel {
         });
         /* Al pulsar carga el producto en Pantalla3 y navega a ella */
         botonVer.addActionListener(e -> {
+            agenteInterfaz.solicitarActualizacion();
             pantalla3.cargarProducto(productos.get(indice));
-            pantalla3.cargarProducto(p);
             bloqueProductoLayout.show(contenedor, "pantalla3");
         });
 

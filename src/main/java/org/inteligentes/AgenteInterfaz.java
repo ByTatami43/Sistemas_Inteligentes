@@ -46,8 +46,8 @@ public class AgenteInterfaz extends Agent {
             CardLayout cardLayout = new CardLayout();
             JPanel contenedor = new JPanel(cardLayout);
 
-            Pantalla3 pantalla3 = new Pantalla3(cardLayout, contenedor);
-            Pantalla2 pantalla2 = new Pantalla2(cardLayout, contenedor, pantalla3);
+            Pantalla3 pantalla3 = new Pantalla3(cardLayout, contenedor,this);
+            Pantalla2 pantalla2 = new Pantalla2(cardLayout, contenedor, pantalla3,this);
             Pantalla1 pantalla1 = new Pantalla1(cardLayout, contenedor, pantalla2, this);
 
             contenedor.add(pantalla1, "pantalla1");

@@ -1,5 +1,6 @@
 package org.inteligentes.pantallas;
 
+import org.inteligentes.AgenteInterfaz;
 import org.inteligentes.Producto;
 
 import javax.swing.*;
@@ -30,10 +31,9 @@ public class Pantalla3 extends JPanel {
     private final JLabel lblUmbral;
     private final JPanel historialPanel;
     private final ChartPanel panelGrafica;
-
     // ELIMINAMOS offsetIzq porque la propia gráfica empujará el contenido
 
-    public Pantalla3(CardLayout bloqueProductoLayout, JPanel contenedor) {
+    public Pantalla3(CardLayout bloqueProductoLayout, JPanel contenedor, AgenteInterfaz agenteInterfaz) {
         Color fondoGris        = new Color(224, 224, 224);
         Color colorGrisOscuro  = new Color(51, 51, 51);
         Color colorLinea       = new Color(220, 220, 220);
@@ -221,7 +221,10 @@ public class Pantalla3 extends JPanel {
             public void mouseEntered(MouseEvent e) { botonVolver.setBackground(new Color(68, 68, 68)); }
             public void mouseExited(MouseEvent e)  { botonVolver.setBackground(colorGrisOscuro); }
         });
-        botonVolver.addActionListener(e -> bloqueProductoLayout.show(contenedor, "pantalla2"));
+        botonVolver.addActionListener(e -> {
+            bloqueProductoLayout.show(contenedor, "pantalla2");
+            agenteInterfaz.solicitarActualizacion();
+        });
 
         // ponemos ya junto
         bloqueProducto.add(lblUrlTitulo);
