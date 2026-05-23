@@ -20,9 +20,7 @@ import java.util.HashMap;
 
 public class AgenteInterfaz extends Agent {
     protected CyclicBehaviour cyclicBehaviour;
-    private Pantalla1 pantalla1;
     private Pantalla2 pantalla2;
-    private Pantalla3 pantalla3;
 
     protected void setup(){
         System.out.println(" Agente de Interfaz iniciado");
@@ -58,7 +56,6 @@ public class AgenteInterfaz extends Agent {
             frame.setVisible(true);
 
             this.pantalla2 = pantalla2;
-            this.pantalla3 = pantalla3;
         });
         // Behaviour 1: escucha el SCRAPING de la GUI y manda REQUEST al procesamiento
         addBehaviour(new CyclicBehaviour() {

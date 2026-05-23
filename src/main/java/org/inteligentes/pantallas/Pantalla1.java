@@ -1,10 +1,10 @@
 package org.inteligentes.pantallas;
 
 import org.inteligentes.AgenteInterfaz;
-import org.inteligentes.Producto;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,20 +15,21 @@ public class Pantalla1 extends JPanel {
     private JTextField nombreInput;
     private JButton botonAdd;
     private JButton botonVerLista;
+    private static final Color COLOR_BLOQUE = new Color(153, 153, 153);
+    private static final Color FONDO_GRIS        = new Color(224, 224, 224);
+    private static final Color COLOR_GRIS_OSCURO = new Color(51, 51, 51);
+    private static final Color COLOR_TEXTO       = new Color(153, 153, 153);
+    private static final Color COLOR_BORDE_FINO  = new Color(85, 85, 85);
+    private static final Color COLOR_HOVER       = new Color(68, 68, 68);
 
-    public Pantalla1(CardLayout bloqueProductoLayout, JPanel contenedor, Pantalla2 pantalla2, AgenteInterfaz agente){
-        Color fondoGris = new Color(224, 224, 224);
-        Color colorGrisOscuro = new Color(51, 51, 51);
-        Color colorTexto = new Color(153, 153, 153);
-        Color colorBordeFino = new Color(85, 85, 85);
-
-        setBackground(fondoGris);
+    public Pantalla1(CardLayout bloqueProductoLayout, JPanel contenedor, Pantalla2 pantalla2, AgenteInterfaz agente) {
+        setBackground(FONDO_GRIS);
         setLayout(new GridBagLayout());
 
-        /* JPanel auxiliar para que pueda agrupar el recuadro para añadir un producto y el de ver la lista de productos*/
+        /* JPanel auxiliar para que pueda agrupar el recuadro para añadir un producto y el de ver la lista de productos */
         JPanel centerBlock = new JPanel();
         centerBlock.setLayout(new BoxLayout(centerBlock, BoxLayout.Y_AXIS));
-        centerBlock.setBackground(fondoGris);
+        centerBlock.setBackground(FONDO_GRIS);
 
         /* El recuadro negro donde se añade el producto */
         JPanel bloqueProducto = new JPanel(new BorderLayout()) {
@@ -42,108 +43,54 @@ public class Pantalla1 extends JPanel {
             }
         };
         bloqueProducto.setOpaque(false);
-        bloqueProducto.setBackground(colorGrisOscuro);
+        bloqueProducto.setBackground(COLOR_GRIS_OSCURO);
         bloqueProducto.setBorder(new EmptyBorder(25, 20, 25, 20));
 
-        /* Basicamente donde se pone el texto de la url */
+        /* Campo de la URL */
         urlInput = new JTextArea(3, 40);
         urlInput.setLineWrap(true);
         urlInput.setWrapStyleWord(true);
-        urlInput.setFont(new Font("SansSerif", Font.PLAIN, 15));
-        urlInput.setBackground(colorGrisOscuro);
-        urlInput.setForeground(colorTexto);
-        urlInput.setCaretColor(Color.WHITE);
-        urlInput.setText("Pega aquí la URL del producto");
-        urlInput.setBorder(new BordeRedondeado(colorBordeFino, 1, 8));
-        urlInput.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                if (urlInput.getText().equals("Pega aquí la URL del producto")) {
-                    urlInput.setText("");
-                    urlInput.setForeground(Color.WHITE);
-                }
-            }
-            public void focusLost(FocusEvent e) {
-                if (urlInput.getText().trim().isEmpty()) {
-                    urlInput.setForeground(colorTexto);
-                    urlInput.setText("Pega aquí la URL del producto");
-                }
-            }
-        });
+        estiloCampo(urlInput, 15);
+        configurarPlaceholder(urlInput, "Pega aquí la URL del producto");
 
-        /* Lo mismo que lo anterior pero para el precio */
+        /* Campo del precio y su etiqueta */
         JLabel precioBuscado = new JLabel("Precio buscado (€)");
         precioBuscado.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        precioBuscado.setForeground(new Color(153, 153, 153));
+        precioBuscado.setForeground(COLOR_TEXTO);
         precioBuscado.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         precioInput = new JTextField(10);
-        precioInput.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        precioInput.setBackground(colorGrisOscuro);
-        precioInput.setForeground(colorTexto);
-        precioInput.setCaretColor(Color.WHITE);
-        precioInput.setText("0,00");
-        precioInput.setBorder(new BordeRedondeado(colorBordeFino, 1, 8));
+        estiloCampo(precioInput, 14);
+        configurarPlaceholder(precioInput, "0,00");
 
-        precioInput.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                if (precioInput.getText().equals("0,00")) {
-                    precioInput.setText("");
-                    precioInput.setForeground(Color.WHITE);
-                }
-            }
-            public void focusLost(FocusEvent e) {
-                if (precioInput.getText().trim().isEmpty()) {
-                    precioInput.setForeground(colorTexto);
-                    precioInput.setText("0,00");
-                }
-            }
-        });
-
+        /* Campo del nombre y su etiqueta */
         JLabel nombreProducto = new JLabel("Nombre del Producto");
         nombreProducto.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        nombreProducto.setForeground(new Color(153, 153, 153));
+        nombreProducto.setForeground(COLOR_TEXTO);
         nombreProducto.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         nombreInput = new JTextField(10);
-        nombreInput.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        nombreInput.setBackground(colorGrisOscuro);
-        nombreInput.setForeground(colorTexto);
-        nombreInput.setCaretColor(Color.WHITE);
-        nombreInput.setText("Escriba el nombre del producto");
-        nombreInput.setBorder(new BordeRedondeado(colorBordeFino, 1, 8));
+        estiloCampo(nombreInput, 14);
+        configurarPlaceholder(nombreInput, "Escriba el nombre del producto");
 
-        nombreInput.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                if (nombreInput.getText().equals("Escriba el nombre del producto")) {
-                    nombreInput.setText("");
-                    nombreInput.setForeground(Color.WHITE);
-                }
-            }
-            public void focusLost(FocusEvent e) {
-                if (nombreInput.getText().trim().isEmpty()) {
-                    nombreInput.setForeground(colorTexto);
-                    nombreInput.setText("Escriba el nombre del producto");
-                }
-            }
-        });
-
-        /* Hace que aparezca scrollbar si el texto es muy largo */
+        /* Hace que aparezca scrollbar si el bloque es muy largo */
         JScrollPane scrollPane = new JScrollPane(urlInput);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.getViewport().setBackground(colorGrisOscuro);
+        scrollPane.getViewport().setBackground(COLOR_GRIS_OSCURO);
 
-        /* Al igual que lo que hace centerBlock, este es usado para agrupar el recuadro del precio */
+        /* Agrupa la etiqueta y el campo del precio */
         JPanel precioPanel = new JPanel();
         precioPanel.setLayout(new BoxLayout(precioPanel, BoxLayout.Y_AXIS));
-        precioPanel.setBackground(colorGrisOscuro);
+        precioPanel.setBackground(COLOR_GRIS_OSCURO);
         precioPanel.setBorder(new EmptyBorder(12, 0, 0, 0));
         precioPanel.add(precioBuscado);
         precioPanel.add(Box.createVerticalStrut(5));
         precioPanel.add(precioInput);
 
+        /* Agrupa la etiqueta y el campo del nombre */
         JPanel nombrePanel = new JPanel();
         nombrePanel.setLayout(new BoxLayout(nombrePanel, BoxLayout.Y_AXIS));
-        nombrePanel.setBackground(colorGrisOscuro);
+        nombrePanel.setBackground(COLOR_GRIS_OSCURO);
         nombrePanel.setBorder(new EmptyBorder(12, 0, 0, 0));
         nombrePanel.add(nombreProducto);
         nombrePanel.add(Box.createVerticalStrut(5));
@@ -162,21 +109,21 @@ public class Pantalla1 extends JPanel {
             }
         };
         botonAdd.setContentAreaFilled(false);
-        botonAdd.setBackground(colorGrisOscuro);
+        botonAdd.setBackground(COLOR_GRIS_OSCURO);
         botonAdd.setForeground(Color.WHITE);
         botonAdd.setFocusPainted(false);
-        botonAdd.setBorder(new BordeRedondeado(colorBordeFino, 1, 8));
+        botonAdd.setBorder(new BotonRedondeado(COLOR_BORDE_FINO, 1, 8));
         botonAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         botonAdd.setFont(new Font("SansSerif", Font.BOLD, 13));
         /* Cuando el raton pasa por encima se pone mas claro el recuadro */
         botonAdd.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { botonAdd.setBackground(new Color(68, 68, 68)); }
-            public void mouseExited(MouseEvent e)  { botonAdd.setBackground(colorGrisOscuro); }
+            public void mouseEntered(MouseEvent e) { botonAdd.setBackground(COLOR_HOVER); }
+            public void mouseExited(MouseEvent e)  { botonAdd.setBackground(COLOR_GRIS_OSCURO); }
         });
         botonAdd.addActionListener(e -> {
             String url = urlInput.getText().trim();
-            String precio = precioInput.getText();
-            String nombre = nombreInput.getText();
+            String precio = precioInput.getText().trim();
+            String nombre = nombreInput.getText().trim();
             if (nombre.isEmpty() || nombre.equals("Escriba el nombre del producto")) {
                 JOptionPane.showMessageDialog(this, "El nombre no puede estar en blanco.");
                 return;
@@ -203,22 +150,23 @@ public class Pantalla1 extends JPanel {
             }
 
             agente.solicitarScraping(url, nombre, umbral);
+            agente.solicitarActualizacion();
             bloqueProductoLayout.show(contenedor, "pantalla2");
         });
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        btnPanel.setBackground(colorGrisOscuro);
+        btnPanel.setBackground(COLOR_GRIS_OSCURO);
         btnPanel.setBorder(new EmptyBorder(15, 0, 0, 0));
         btnPanel.add(botonAdd);
 
-        /* Agrupa el recuadro de la url con el del precio */
+        /* Agrupa el recuadro de la url, el del precio y el del nombre */
         JPanel urlYPrecioBox = new JPanel();
         urlYPrecioBox.setLayout(new BoxLayout(urlYPrecioBox, BoxLayout.Y_AXIS));
         urlYPrecioBox.add(nombrePanel);
         urlYPrecioBox.add(Box.createVerticalStrut(10));
         urlYPrecioBox.add(scrollPane);
         urlYPrecioBox.add(precioPanel);
-        urlYPrecioBox.setBackground(colorGrisOscuro);
+        urlYPrecioBox.setBackground(COLOR_GRIS_OSCURO);
         urlYPrecioBox.setOpaque(true);
         bloqueProducto.add(urlYPrecioBox, BorderLayout.CENTER);
         bloqueProducto.add(btnPanel, BorderLayout.SOUTH);
@@ -236,7 +184,7 @@ public class Pantalla1 extends JPanel {
             }
         };
         botonVerLista.setContentAreaFilled(false);
-        botonVerLista.setBackground(colorGrisOscuro);
+        botonVerLista.setBackground(COLOR_GRIS_OSCURO);
         botonVerLista.setForeground(Color.WHITE);
         botonVerLista.setFocusPainted(false);
         botonVerLista.setBorderPainted(false);
@@ -245,8 +193,8 @@ public class Pantalla1 extends JPanel {
         botonVerLista.setPreferredSize(new Dimension(280, 42));
 
         botonVerLista.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { botonVerLista.setBackground(new Color(68, 68, 68)); }
-            public void mouseExited(MouseEvent e)  { botonVerLista.setBackground(colorGrisOscuro); }
+            public void mouseEntered(MouseEvent e) { botonVerLista.setBackground(COLOR_HOVER); }
+            public void mouseExited(MouseEvent e)  { botonVerLista.setBackground(COLOR_GRIS_OSCURO); }
         });
         botonVerLista.addActionListener(e -> {
             bloqueProductoLayout.show(contenedor, "pantalla2");
@@ -254,7 +202,7 @@ public class Pantalla1 extends JPanel {
         });
 
         JPanel btnListaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        btnListaPanel.setBackground(fondoGris);
+        btnListaPanel.setBackground(FONDO_GRIS);
         btnListaPanel.setBorder(new EmptyBorder(25, 0, 0, 0));
         btnListaPanel.add(botonVerLista);
 
@@ -265,35 +213,32 @@ public class Pantalla1 extends JPanel {
         SwingUtilities.invokeLater(this::requestFocusInWindow);
     }
 
-    static class BordeRedondeado implements Border {
-        private final Color color;
-        private final int grosor;
-        private final int radio;
 
-        public BordeRedondeado(Color color, int grosor, int radio) {
-            this.color = color;
-            this.grosor = grosor;
-            this.radio = radio;
-        }
 
-        @Override
-        public Insets getBorderInsets(Component c) {
-            return new Insets(10, 10, 10, 10);
-        }
-
-        @Override
-        public boolean isBorderOpaque() {
-            return false;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(color);
-            g2.setStroke(new BasicStroke(grosor));
-            g2.drawRoundRect(x + grosor / 2, y + grosor / 2, width - grosor, height - grosor, radio, radio);
-            g2.dispose();
-        }
+    private void estiloCampo(JTextComponent bloque, int tamanioFuente) {
+        bloque.setFont(new Font("SansSerif", Font.PLAIN, tamanioFuente));
+        bloque.setBackground(new Color(51, 51, 51));
+        bloque.setCaretColor(Color.WHITE);
+        bloque.setBorder(new BotonRedondeado(new Color(85, 85, 85), 1, 8));
     }
+
+    private void configurarPlaceholder(JTextComponent bloque, String texto) {
+        bloque.setForeground(COLOR_BLOQUE);
+        bloque.setText(texto);
+        bloque.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (bloque.getText().equals(texto)) {
+                    bloque.setText("");
+                    bloque.setForeground(Color.WHITE);
+                }
+            }
+            public void focusLost(FocusEvent e) {
+                if (bloque.getText().trim().isEmpty()) {
+                    bloque.setForeground(COLOR_BLOQUE);
+                    bloque.setText(texto);
+                }
+            }
+        });
+    }
+
 }

@@ -31,7 +31,6 @@ public class Pantalla3 extends JPanel {
     private final JLabel lblUmbral;
     private final JPanel historialPanel;
     private final ChartPanel panelGrafica;
-    // ELIMINAMOS offsetIzq porque la propia gráfica empujará el contenido
 
     public Pantalla3(CardLayout bloqueProductoLayout, JPanel contenedor, AgenteInterfaz agenteInterfaz) {
         Color fondoGris        = new Color(224, 224, 224);
@@ -78,8 +77,7 @@ public class Pantalla3 extends JPanel {
         JLabel lblUrlTitulo = new JLabel("URL", SwingConstants.CENTER);
         lblUrlTitulo.setFont(new Font("SansSerif", Font.PLAIN, 13));
         lblUrlTitulo.setForeground(colorEtiqueta);
-        lblUrlTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblUrlTitulo.setBorder(new EmptyBorder(0, 0, 5, 650));
+        lblUrlTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         lblUrl = new JLabel("");
         lblUrl.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -160,9 +158,9 @@ public class Pantalla3 extends JPanel {
         sepWrapper.setOpaque(false);
         sepWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         sepWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JSeparator lineaReal = new JSeparator();
-        lineaReal.setForeground(colorLinea);
-        sepWrapper.add(lineaReal, BorderLayout.CENTER);
+        JSeparator separador = new JSeparator();
+        separador.setForeground(colorLinea);
+        sepWrapper.add(separador, BorderLayout.CENTER);
 
         historialPanel = new JPanel();
         historialPanel.setLayout(new BoxLayout(historialPanel, BoxLayout.Y_AXIS));

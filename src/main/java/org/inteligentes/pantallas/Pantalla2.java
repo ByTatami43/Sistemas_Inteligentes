@@ -140,23 +140,6 @@ public class Pantalla2 extends JPanel {
         add(centerBlock);
     }
 
-    /* Añade un producto a la lista y repinta el panel */
-    public void agregarProducto(Producto p) {
-        productos.add(p);
-
-        /* Separador entre filas, excepto antes de la primera */
-        if (productos.size() > 1) {
-            JSeparator sep = new JSeparator();
-            sep.setForeground(new Color(220, 220, 220));
-            sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-            listaPanel.add(sep);
-        }
-
-        listaPanel.add(crearFila(p));
-        listaPanel.revalidate();
-        listaPanel.repaint();
-    }
-
     public void actualizarProductos(HashMap<String, Producto> productosActualizados) {
         System.out.println("[Pantalla2] actualizarProductos llamado con " + productosActualizados.size() + " productos");
         productos.clear();
@@ -203,7 +186,6 @@ public class Pantalla2 extends JPanel {
 
     /* Crea el botón de acción de cada fila, rojo si hay alerta, azul si no */
     private JButton crearBotonFila(Producto p) {
-        int indice = productos.indexOf(p);
         boolean alerta = p.isAlerta();
         String texto   = alerta ? "ALERTA" : "Ver";
         Color colorAlerta = alerta ? new Color(210, 45, 45) : new Color(52, 120, 210);
@@ -236,7 +218,7 @@ public class Pantalla2 extends JPanel {
         /* Al pulsar carga el producto en Pantalla3 y navega a ella */
         botonVer.addActionListener(e -> {
             agenteInterfaz.solicitarActualizacion();
-            pantalla3.cargarProducto(productos.get(indice));
+            pantalla3.cargarProducto(p);
             bloqueProductoLayout.show(contenedor, "pantalla3");
         });
 
