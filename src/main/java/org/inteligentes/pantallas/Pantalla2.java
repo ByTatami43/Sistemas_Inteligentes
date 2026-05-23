@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Pantalla2 extends JPanel {
-
+    private Producto productoSeleccionado = null;
     private final JPanel listaPanel;
     private final List<Producto> productos = new ArrayList<>();
     private final Pantalla3 pantalla3;
@@ -160,6 +160,15 @@ public class Pantalla2 extends JPanel {
         listaPanel.revalidate();
         listaPanel.repaint();
         System.out.println("[Pantalla2] repintado completado");
+        if (productoSeleccionado != null) {
+            Producto actualizado = productos.stream()
+                    .filter(p -> p.getEnlace().equals(productoSeleccionado.getEnlace()))
+                    .findFirst()
+                    .orElse(null);
+            if (actualizado != null) {
+                pantalla3.cargarProducto(actualizado);
+            }
+        }
     }
 
     /* Construye el panel de una fila con el nombre y el botón de acción */
@@ -186,6 +195,7 @@ public class Pantalla2 extends JPanel {
 
     /* Crea el botón de acción de cada fila, rojo si hay alerta, azul si no */
     private JButton crearBotonFila(Producto p) {
+        int indice = productos.indexOf(p);
         boolean alerta = p.isAlerta();
         String texto   = alerta ? "ALERTA" : "Ver";
         Color colorAlerta = alerta ? new Color(210, 45, 45) : new Color(52, 120, 210);
@@ -217,8 +227,9 @@ public class Pantalla2 extends JPanel {
         });
         /* Al pulsar carga el producto en Pantalla3 y navega a ella */
         botonVer.addActionListener(e -> {
+            productoSeleccionado = productos.get(indice);
             agenteInterfaz.solicitarActualizacion();
-            pantalla3.cargarProducto(p);
+            pantalla3.cargarProducto(productoSeleccionado);
             bloqueProductoLayout.show(contenedor, "pantalla3");
         });
 
