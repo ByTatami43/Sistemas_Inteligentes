@@ -136,10 +136,11 @@ Para probar el correcto funcionamiento del sistema, la extracción de datos medi
 
 ## Declaración de uso de IA
 
-De acuerdo con las normativas de la asignatura, declaramos el uso de herramientas de Inteligencia Artificial Generativa (Claude(Anthropic) y Gemini(Google)) como asistente pedagógico y de desarrollo de software durante la realización de este proyecto.
+De acuerdo con las normativas de la asignatura, declaramos el uso de herramientas de Inteligencia Artificial Generativa para ciertos ámbitos del desarrollo de este proyecto.
 
 El uso de IA se ha limitado a las siguientes tareas:
-* **Ayuda en la creación de GUI que se había diseñado en Figma 
+* **Corrección del README**
+* **Ayuda en la creación de GUI:** Se había diseñado en Figma y se utilizó para traducir el diseño a Java Swing. 
 * **Diseño del protocolo de comunicación:** Asistencia para estructurar correctamente los mensajes ACL aplicando las performativas semánticas adecuadas(REQUEST, INFORM, PROPOSE) según el estándar FIPA.
 * **Integración de Hilos (JADE vs Swing):** Consulta sobre patrones de diseño seguros para comunicar el Agente de Interfaz con la GUI sin bloquear el *Event Dispatch Thread* de java, implementando 'SwingUtilities.invokeLater'.
 * **Optimización de Comportamientos:** Guía en la implementación de comportamientos bloqueantes('MessageTemplate' con 'block()') para evitar la saturación de CPU, y uso de 'TicketBehaviour' para los ciclos de scraping.
