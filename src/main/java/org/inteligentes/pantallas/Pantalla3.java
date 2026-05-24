@@ -1,16 +1,39 @@
 package org.inteligentes.pantallas;
 
-import org.inteligentes.AgenteInterfaz;
-import org.inteligentes.Producto;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
+import org.inteligentes.AgenteInterfaz;
+import org.inteligentes.Producto;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -22,6 +45,12 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+/**
+ * Ventana de Análisis Detallado.
+ * Expresa visualmente el histórico cronológico del producto.
+ * Genera una gráfica automatizada y calcula métricas de varianza 
+ * con respecto al precio umbral definido.
+ */
 public class Pantalla3 extends JPanel {
 
     private final JLabel lblNombreProducto;
@@ -42,7 +71,7 @@ public class Pantalla3 extends JPanel {
         setBackground(fondoGris);
         setLayout(new GridBagLayout());
 
-        /* JPanel auxiliar con ancho fijo pero altura dinámica */
+        // JPanel auxiliar con ancho fijo pero altura dinámica
         JPanel centerBlock = new JPanel() {
             @Override
             public Dimension getPreferredSize() {
@@ -56,7 +85,7 @@ public class Pantalla3 extends JPanel {
         centerBlock.setLayout(new BoxLayout(centerBlock, BoxLayout.Y_AXIS));
         centerBlock.setBackground(fondoGris);
 
-        /* El recuadro blanco principal */
+        // El recuadro blanco principal
         JPanel bloqueProducto = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -89,14 +118,14 @@ public class Pantalla3 extends JPanel {
         lblUrl.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblUrl.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        // PAnel divisor
+        // Panel divisor
         JPanel panelDivisor = new JPanel();
         panelDivisor.setLayout(new BoxLayout(panelDivisor, BoxLayout.X_AXIS));
         panelDivisor.setOpaque(false);
         panelDivisor.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
-        // grafica
+        // Grafica
         panelGrafica = new ChartPanel(null);
         panelGrafica.setOpaque(false);
         panelGrafica.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
@@ -107,13 +136,13 @@ public class Pantalla3 extends JPanel {
 
 
 
-        // panel detalles para los detalles
+        // Panel detalles para los detalles
         JPanel panelDetalles = new JPanel();
         panelDetalles.setLayout(new BoxLayout(panelDetalles, BoxLayout.Y_AXIS));
         panelDetalles.setOpaque(false);
         panelDetalles.setAlignmentY(Component.TOP_ALIGNMENT); // Para que se alinee arriba con la gráfica
 
-        /* Componentes de la columna derecha (sin offsetIzq) */
+        // Componentes de la columna derecha (sin offsetIzq)
         JLabel lblProductTitulo = new JLabel("Producto");
         lblProductTitulo.setFont(new Font("SansSerif", Font.PLAIN, 13));
         lblProductTitulo.setForeground(colorEtiqueta);
@@ -224,7 +253,7 @@ public class Pantalla3 extends JPanel {
             agenteInterfaz.solicitarActualizacion();
         });
 
-        // ponemos ya junto
+        // Añadimos todo al bloqueProducto
         bloqueProducto.add(lblUrlTitulo);
         bloqueProducto.add(lblUrl);
         bloqueProducto.add(Box.createVerticalStrut(25)); // Espacio entre URL y columnas
@@ -238,6 +267,14 @@ public class Pantalla3 extends JPanel {
         add(centerBlock);
     }
 
+    /**
+     * Crea un panel para mostrar el precio de un producto.
+     * @param titulo El título del precio.
+     * @param valor La etiqueta que muestra el valor del precio.
+     * @param colorEtiqueta El color de la etiqueta del título.
+     * @param colorValor El color de la etiqueta del valor.
+     * @return El panel creado.
+     */
     private JPanel bloquePrecio(String titulo, JLabel valor, Color colorEtiqueta, Color colorValor) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -258,15 +295,22 @@ public class Pantalla3 extends JPanel {
         return panel;
     }
 
+    /**
+     * Inyección y Carga de Datos.
+     * Mapea las estructuras internas del objeto Producto (Arrays paralelos de Precios/Fechas)
+     * a los elementos interactivos del panel y recrea la gráfica.
+     */
     public void cargarProducto(Producto p) {
         lblNombreProducto.setText(p.getNombre());
         lblUrl.setText(p.getEnlace());
         lblUmbral.setText(String.format("%.2f €", p.getUmbral()));
 
+        // Precio actual y variación
         Double actual = p.getPrecioActual();
         if (actual != null) {
             lblPrecioActual.setText(String.format("%.2f €", actual));
             ArrayList<Double> precios = p.getPrecios();
+            // Calculamos la variación respecto al precio anterior, si existe
             if (precios.size() >= 2) {
                 double anterior = precios.get(precios.size() - 2);
                 double variacion = actual - anterior;
@@ -279,10 +323,12 @@ public class Pantalla3 extends JPanel {
             lblVariacion.setText("—");
         }
 
+        // Historial cronológico
         historialPanel.removeAll();
         ArrayList<Double> precios = p.getPrecios();
         ArrayList<LocalDateTime> fechas = p.getFechas();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        // Recorre el array a la inversa para garantizar que los timestamps más recientes estén arriba
         for (int i = precios.size() - 1; i >= 1; i--) {
             String ts = fechas.get(i).format(fmt);
             double precioIni = precios.get(i - 1);
@@ -291,8 +337,8 @@ public class Pantalla3 extends JPanel {
         historialPanel.revalidate();
         historialPanel.repaint();
 
-        // grafica
-        // 1. Grafica
+        
+        // Procesamiento y Generación de Gráfica
         XYSeries serie = new XYSeries("PRECIO");
 
         for (int i = 0; i < precios.size(); i++) {
@@ -303,25 +349,25 @@ public class Pantalla3 extends JPanel {
         dataset.addSeries(serie);
         JFreeChart chart = ChartFactory.createXYLineChart(null,null, null,
                 dataset, PlotOrientation.VERTICAL, false, true, false);
-        // obtenemos el plot
+        // Obtenemos el plot
         XYPlot plot = chart.getXYPlot();
-        // quitamos los fondos del plot
+        // Quitamos los fondos del plot
         plot.setBackgroundPaint(Color.WHITE);
         chart.setBackgroundPaint(Color.WHITE);
         plot.setOutlineVisible(false);
         plot.setDomainGridlinesVisible(false);
         plot.setRangeGridlinesVisible(false);
-        // quitamos los ejes
+        // Quitamos los ejes
         plot.getDomainAxis().setVisible(false);
         plot.getRangeAxis().setVisible(false);
-        // estilo linea azul
+        // Estilo linea azul
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         renderer.setSeriesPaint(0, new Color(135, 206, 235));
         renderer.setSeriesStroke(0, new BasicStroke(2.0f));
         renderer.setSeriesShapesVisible(0, true);
         renderer.setSeriesShape(0, new Ellipse2D.Double(-4.0, -4.0, 8.0, 8.0));
         plot.setRenderer(renderer);
-        // linea negra (UMBRAL)
+        // Línea negra (UMBRAL)
         double precioUmbral = p.getUmbral();
         ValueMarker marker = new ValueMarker(precioUmbral);
         System.out.println(p.getUmbral());
@@ -329,6 +375,7 @@ public class Pantalla3 extends JPanel {
         float[] dashPattern = {10.0f, 10.0f};
         marker.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dashPattern, 0.0f));
         plot.addRangeMarker(marker);
+        // Calcula la máxima distancia de desviación absoluta de cualquier precio con respecto al umbral
         double maximaDistancia = 0.0;
         for (Double precio : precios) {
             double distancia = Math.abs(precio - precioUmbral);
@@ -342,19 +389,19 @@ public class Pantalla3 extends JPanel {
             maximaDistancia = maximaDistancia * 1.1;
         }
 
-        // 3. Obligamos al eje Y a ser perfectamente simétrico respecto al umbral
+        // Obligamos al eje Y a ser perfectamente simétrico respecto al umbral
         double limiteInferior = precioUmbral - maximaDistancia;
         double limiteSuperior = precioUmbral + maximaDistancia;
 
         NumberAxis yAxis = (org.jfree.chart.axis.NumberAxis) plot.getRangeAxis();
         yAxis.setAutoRange(false); // Apagamos el zoom automático
         yAxis.setRange(limiteInferior, limiteSuperior); // Centramos la cámara
-        panelGrafica.setChart(chart);
-
+        panelGrafica.setChart(chart); // Monta el gráfico final procesado
 
         this.revalidate();
     }
 
+    // Crea una fila del historial con timestamp y precio inicial
     private JPanel crearFilaHistorial(String timestamp, double precioInicial) {
         JPanel fila = new JPanel(new GridLayout(1, 2));
         fila.setOpaque(false);
