@@ -151,4 +151,13 @@ public class AgenteInterfaz extends Agent {
         }
     }
 
+    @Override
+    protected void takeDown() {
+        try{
+            DFService.deregister(this);
+            System.out.println("Agente Interfaz desregistrado del DF.");
+        } catch (FIPAException fe){
+            fe.printStackTrace();
+        }
+    }
 }

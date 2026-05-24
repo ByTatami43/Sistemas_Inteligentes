@@ -50,7 +50,7 @@ public class AgenteScrapper extends Agent {
             dfd.addServices(sd);
             try{
                 DFService.register(this,dfd);
-                System.out.println("Agente percepcion-webScrapping registrado correctamente en el DF.");
+                System.out.println("Agente Percepcion-webScrapping registrado correctamente en el DF.");
             }catch (FIPAException fe){
                 fe.printStackTrace();
             }
@@ -161,7 +161,7 @@ public class AgenteScrapper extends Agent {
             if(playwright != null) playwright.close();
             try{
                 DFService.deregister(this);
-                System.out.println("Agente percepcion desregistrado del DF.");
+                System.out.println("Agente Percepcion desregistrado del DF.");
             } catch (FIPAException fe){
                 fe.printStackTrace();
             }
