@@ -179,7 +179,7 @@ public class Pantalla2 extends JPanel {
 
         // Reconstrucción del listado fila por fila
         for (int i = 0; i < productos.size(); i++) {
-            System.out.println("[Pantalla2] pintando producto: " + productos.get(i).getNombre());
+            System.out.println("[Pantalla2] " + productos.get(i).getNombre() + " alerta: " + productos.get(i).isAlerta());
             if (i > 0) {
                 JSeparator sep = new JSeparator();
                 sep.setForeground(new Color(220, 220, 220));

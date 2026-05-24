@@ -45,6 +45,7 @@ public class AgenteProcesamiento extends Agent {
             fe.printStackTrace();
         }
         productos = csv.inicializarCSV();
+        productos.values().forEach(Producto::updateAlerta);
         // Agrega los comportamientos necesarios para la operación del agente.
         addBehaviour(new SolicitudActualizacionInterfaz());
         addBehaviour(new SolicitudesProgramadasScrapper(this, 30000)); // Actúa como un cronometro para el sistema, ejecutándose cada 30 segundos (30000 ms)
@@ -139,6 +140,8 @@ public class AgenteProcesamiento extends Agent {
                             if (Double.parseDouble(aux[x + 1]) >= 0) {
                                 // Actualiza el estado del objeto (la clase Producto maneja las fechas internamente)
                                 productos.get(aux[x]).setPrecioActual(Double.parseDouble(aux[x + 1]));
+                                productos.get(aux[x]).updateAlerta();
+                                System.out.println("[Procesamiento] " + aux[x] + " precio: " + aux[x+1] + " umbral: " + productos.get(aux[x]).getUmbral() + " alerta: " + productos.get(aux[x]).isAlerta());
                                 csv.guardarEnCSV(productos.get(aux[x])); //Escribe la nueva fila en el CSV
                             }
                         }

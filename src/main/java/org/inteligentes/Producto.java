@@ -87,7 +87,9 @@ public class Producto implements Serializable{
      * Compara la última percepción del entorno con el objetivo del usuario.
      */
     public void updateAlerta(){
-        this.alerta = precios.get(precios.size()-1) < umbral;
+        if (!precios.isEmpty()) {
+            this.alerta = precios.get(precios.size()-1) < umbral;
+        }
     }
 
     //Otra auxiliar para rellenar BBDD

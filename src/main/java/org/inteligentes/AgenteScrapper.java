@@ -136,7 +136,7 @@ public class AgenteScrapper extends Agent {
 
                 // Limpieza de la cadena para el parseo matemático
                 resultado = resultado.replace("USD", "").replace("EUR", "").trim().replace(",",".");
-
+                resultado = resultado.split("[^0-9.]")[0].trim();
                 System.out.println("Precio encontrado: " + resultado );
                 precio = Double.parseDouble(resultado);
             } catch (com.microsoft.playwright.TimeoutError e) {
