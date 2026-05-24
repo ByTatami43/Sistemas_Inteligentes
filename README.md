@@ -66,7 +66,7 @@ Todas las dependencias están declaradas en `pom.xml` y se gestionan con Maven:
 
 Desde la raíz del proyecto, lanzar la plataforma JADE con los tres agentes:
 ```bash
-mvn clean:compile
+mvn clean compile
 ```
 ```bash
 mvn exec:java
@@ -85,7 +85,7 @@ Y al salir:
 ```
 Agente Procesamiento desregistrado del DF.
 Agente Interfaz desregistrado del DF.
-Agente percepcion desregistrado del DF.
+Agente Percepcion desregistrado del DF.
 ```
 Se abrirán dos ventanas: la **GUI de administración de JADE** y la ventana principal de la aplicación **Price Scraper**.
 
