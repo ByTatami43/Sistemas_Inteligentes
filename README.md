@@ -78,6 +78,7 @@ mvn exec:java
 Esto ejecuta el comando configurado en el `pom.xml`.
 
 **Opción 2: Con el JAR generado (después de compilar)**
+
 *(Sin el GUI de jade)*
 ```bash
 java -jar target/monitor-precios.jar -agents "AgenteInterfaz:org.inteligentes.AgenteInterfaz;AgenteScrapper:org.inteligentes.AgenteScrapper;AgenteProcesamiento:org.inteligentes.AgenteProcesamiento"
