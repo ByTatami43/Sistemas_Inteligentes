@@ -117,6 +117,7 @@ Para probar el correcto funcionamiento del sistema, la extracción de datos medi
 
 ## Diagrama de la Arquitectura del Sistema
 
+![Diagrama Arquitectura](Diagrama.png)
 ---
 
 ## Declaración de uso de IA
