@@ -172,6 +172,10 @@ public class Pantalla1 extends JPanel {
                 JOptionPane.showMessageDialog(this, "Este producto ya está en la lista.");
                 return;
             }
+            if (pantalla2.getNumProductos() >= 10) {
+                JOptionPane.showMessageDialog(this, "No puedes añadir más de 10 productos.");
+                return;
+            }
 
             // Validación de formato del precio y conversión a número
             double umbral;

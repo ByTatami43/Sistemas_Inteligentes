@@ -65,42 +65,7 @@ public class AgenteInterfaz extends Agent {
 
             this.pantalla2 = pantalla2;
         });
-        // Behaviour 1: Escucha los mensajes que el propio agente se envía desde el hilo de Swing para iniciar el proceso de scraping o actualizar la información
-        addBehaviour(new CyclicBehaviour() {
-            public void action() {
-                // Filtro bloqueante: Solo despierta este comportamiento si llega un mensaje de tipo REQUEST
-                MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-                ACLMessage msg = myAgent.receive(mt);
-                if (msg != null) {
-                    // Caso 1: Petición de añadir y screpear un nuevo producto
-                    if (msg.getContent().startsWith("SCRAPING;")) {
-                        String[] partes = msg.getContent().substring(9).split(";");
-                        addBehaviour(new OneShotBehaviour() {
-                            public void action() {
-                                ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
-                                request.addReceiver(new AID("AgenteProcesamiento", AID.ISLOCALNAME));
-                                request.setContent(partes[0] + ";" + partes[1] + ";" + partes[2]);
-                                send(request);
-                                System.out.println("[Interfaz] Enviado a Procesamiento: " + request.getContent());
-                            }
-                        });
-                    } else if (msg.getContent().equals("ACTUALIZAR")) { // Caso 2: Petición de actualizar la información de los productos
-                        addBehaviour(new OneShotBehaviour() {
-                            public void action() {
-                                ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
-                                request.addReceiver(new AID("AgenteProcesamiento", AID.ISLOCALNAME));
-                                request.setContent("ACTUALIZAR");
-                                send(request);
-                            }
-                        });
-                    }
-                } else {
-                    block(); // Bloquea el comportamiento hasta que llegue un nuevo mensaje a la cola
-                }
-            }
-        });
-
-        // Behaviour 2: escucha el INFORM del procesamiento con el HashMap serializado
+        addBehaviour(new GestionarPeticionesGUI());
         addBehaviour(new ActualizarGUI());
     }
 
@@ -124,6 +89,40 @@ public class AgenteInterfaz extends Agent {
         msg.setContent("ACTUALIZAR");
         send(msg);
     }
+    /**
+     * Escucha los mensajes que el propio agente se envía desde el hilo de Swing para iniciar el proceso de scraping o actualizar la información
+     * */
+    class GestionarPeticionesGUI extends CyclicBehaviour {
+        public void action() {
+            MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+            ACLMessage msg = myAgent.receive(mt);
+            if (msg != null) {
+                if (msg.getContent().startsWith("SCRAPING;")) {
+                    String[] partes = msg.getContent().substring(9).split(";");
+                    addBehaviour(new OneShotBehaviour() {
+                        public void action() {
+                            ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+                            request.addReceiver(new AID("AgenteProcesamiento", AID.ISLOCALNAME));
+                            request.setContent(partes[0] + ";" + partes[1] + ";" + partes[2]);
+                            send(request);
+                            System.out.println("[Interfaz] Enviado a Procesamiento: " + request.getContent());
+                        }
+                    });
+                } else if (msg.getContent().equals("ACTUALIZAR")) {
+                    addBehaviour(new OneShotBehaviour() {
+                        public void action() {
+                            ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+                            request.addReceiver(new AID("AgenteProcesamiento", AID.ISLOCALNAME));
+                            request.setContent("ACTUALIZAR");
+                            send(request);
+                        }
+                    });
+                }
+            } else {
+                block();
+            }
+        }
+    }
 
     /**
      * Comportamiento cíclico que recibe los datos procesados en forma de objeto HashMap y fuerza la actualización de la interfaz visual.
@@ -134,19 +133,21 @@ public class AgenteInterfaz extends Agent {
             MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
             ACLMessage msg = myAgent.receive(mt);
             if (msg != null) {
+                System.out.println("[Interfaz] INFORM recibido");
                 try {
                     HashMap<String, Producto> productosActualizados =
                             (HashMap<String, Producto>) msg.getContentObject();
-                    
+
                     // Modificamos los componentes visuales estrictamente dentro del hilo de Swing
                     SwingUtilities.invokeLater(() -> {
+                        System.out.println("[Interfaz] invokeLater ejecutado, pantalla2 visible: " + pantalla2.isShowing());
                         pantalla2.actualizarProductos(productosActualizados);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                block(); // Bloquea el comportamiento hasta que llegue un nuevo mensaje a la cola 
+                block(); // Bloquea el comportamiento hasta que llegue un nuevo mensaje a la cola
             }
         }
     }

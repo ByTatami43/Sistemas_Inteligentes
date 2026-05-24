@@ -191,7 +191,7 @@ public class Pantalla2 extends JPanel {
         listaPanel.revalidate();
         listaPanel.repaint();
         System.out.println("[Pantalla2] repintado completado");
-        
+
         /*Si el usuario tiene abierta la pantalla de detalles (Pantalla3) 
           de un producto concreto, le inyectamos los datos actualizados en background.*/
         if (productoSeleccionado != null) {
@@ -281,5 +281,8 @@ public class Pantalla2 extends JPanel {
         */
     public boolean contieneEnlace(String url) {
         return productos.stream().anyMatch(p -> p.getEnlace().equals(url));
+    }
+    public int getNumProductos() {
+        return productos.size();
     }
 }

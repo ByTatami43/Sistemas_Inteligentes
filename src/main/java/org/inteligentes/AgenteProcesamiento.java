@@ -147,7 +147,7 @@ public class AgenteProcesamiento extends Agent {
                         }
 
                         // Avisa a la GUI de que hay nuevos datos en el sistema
-                        ACLMessage msgM = new ACLMessage(ACLMessage.REQUEST);
+                        ACLMessage msgM = new ACLMessage(ACLMessage.INFORM);
                         AID agenteAID = buscarInterfazEnDF();
                         msgM.addReceiver(agenteAID);
                         //mando nuestro mapa de productos para que la interfaz pueda actualizarlo
