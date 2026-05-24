@@ -1,6 +1,6 @@
 # Price Scraper — Sistema Multiagente con JADE
 
-Monitor inteligente de precios de eBay basado en un Sistema Multiagente (SMA) implementado con el framework JADE. La aplicación permite rastrear el precio de productos en tiempo real, guardar el historial y recibir alertas visuales cuando el precio cae por debajo de un umbral definido por el usuario.
+Monitor inteligente de precios basado en un Sistema Multiagente (SMA) implementado con el framework JADE. La aplicación permite rastrear el precio de productos en tiempo real, guardar el historial y recibir alertas visuales cuando el precio cae por debajo de un umbral definido por el usuario.
 
 ## Requisitos previos
 
@@ -19,35 +19,36 @@ mvn -version
 
 ---
 
-## Instalación
-
-### 1. Clonar el repositorio
-
+ ## Instalación
+1. Clonar el repositorio
 ```bash
-git clone [URL DE REPOSITORIO]
+git clone https://github.com/USUARIO/Sistemas_Inteligentes.git
 cd Sistemas_Inteligentes
 ```
 
-### 2. Descargar dependencias
+2. Instalar JADE manualmente
+Instálalo en tu repositorio Maven local ejecutando este comando desde la raíz del proyecto.
 
-Maven descarga automáticamente todas las dependencias, incluyendo JADE desde el repositorio oficial de TILab:
+Windows:
+```bash
+mvn install:install-file "-Dfile=lib/jade.jar" "-DgroupId=com.tilab.jade" "-DartifactId=jade" "-Dversion=4.6.0" "-Dpackaging=jar"
+```
+  Linux / macOS:
+```bash
+bashmvn install:install-file -Dfile=lib/jade.jar -DgroupId=com.tilab.jade -DartifactId=jade -Dversion=4.6.0 -Dpackaging=jar
+```
+Deberías ver BUILD SUCCESS.
 
+3. Descargar el resto de dependencias
 ```bash
 mvn clean install -DskipTests
 ```
-
-### 3. Instalar los navegadores de Playwright
-
-Playwright necesita descargar el binario de Chromium la primera vez. Este paso es obligatorio para que el scraping funcione:
-
+Playwright descarga el navegador Chromium automáticamente la primera vez que se ejecuta la aplicación. No se necesita ningún paso adicional.
+En caso de que no se descargue correctamente ejecutar esto:
 ```bash
-mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install chromium"
+mvn exec:java "-Dexec.mainClass=com.microsoft.playwright.CLI" "-Dexec.args=install chromium"
 ```
-
----
-
 ## Dependencias
-
 Todas las dependencias están declaradas en `pom.xml` y se gestionan con Maven:
 
 | Dependencia | Versión | Uso |
@@ -68,18 +69,20 @@ Desde la raíz del proyecto, lanzar la plataforma JADE con los tres agentes:
 ```bash
 mvn exec:java
 ```
-
 Esto ejecuta el comando configurado en el `pom.xml`
 
 Al arrancar correctamente verás en consola:
 
 ```
-Agente de Interfaz iniciado
-Agente Interfaz registrado correctamente en el DF.
-Agente de Procesamiento AgenteProcesamiento@... iniciado.
 Agente Procesamiento registrado correctamente en el DF.
+Agente Interfaz registrado correctamente en el DF.
 Agente percepcion-webScrapping registrado correctamente en el DF.
 ```
 
+Y al salir: 
+```
+Agente Procesamiento desregistrado del DF.
+Agente percepcion desregistrado del DF.
+```
 Se abrirán dos ventanas: la **GUI de administración de JADE** y la ventana principal de la aplicación **Price Scraper**.
 
