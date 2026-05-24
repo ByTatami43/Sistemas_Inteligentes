@@ -61,20 +61,33 @@ Todas las dependencias están declaradas en `pom.xml` y se gestionan con Maven:
 > **Nota:** JADE se descarga desde el repositorio Maven de TILab (`https://jade.tilab.com/maven/`), que está declarado en el `pom.xml`. No hace falta añadirlo manualmente.
 
 ---
+## Generación del JAR
+Ejecuta desde la raíz del proyecto:
+```bash
+mvn clean package
+```
 
 ## Ejecución
 
+**Opción 1: Con Maven (desarrollo)**
+
 Desde la raíz del proyecto, lanzar la plataforma JADE con los tres agentes:
-```bash
-mvn clean compile
-```
 ```bash
 mvn exec:java
 ```
-Esto ejecuta el comando configurado en el `pom.xml`
+Esto ejecuta el comando configurado en el `pom.xml`.
+
+**Opción 2: Con el JAR generado (después de compilar)**
+*(Sin el GUI de jade)
+```bash
+java -jar target/monitor-precios.jar -agents "AgenteInterfaz:org.inteligentes.AgenteInterfaz;AgenteScrapper:org.inteligentes.AgenteScrapper;AgenteProcesamiento:org.inteligentes.AgenteProcesamiento"
+```
+*(Con el GUI de jade)
+```bash
+java -jar target/monitor-precios.jar -gui -agents "AgenteInterfaz:org.inteligentes.AgenteInterfaz;AgenteScrapper:org.inteligentes.AgenteScrapper;AgenteProcesamiento:org.inteligentes.AgenteProcesamiento"
+```
 
 Al arrancar correctamente verás en consola:
-
 ```
 Agente Procesamiento registrado correctamente en el DF.
 Agente Interfaz registrado correctamente en el DF.
