@@ -148,12 +148,4 @@ El uso de IA se ha limitado a las siguientes tareas:
 
 La concepción general de la arquitectura, la implementación del scraping con Playwright, el diseño lógico de evaluación de mercado, la persistencia en CSV, el diseño visual de la interfaz y la integración final del código han sido desarrollados íntegramente de forma manual por los miembros del grupo.
 
----
-
-## Autores
-* Daniel Zhan - ByTatami43
-* Gabriel Samuel Vigil Rodríguez - ChambaVigil
-* Nicolás Cidoncha Rodríguez de la Flor - Zumooo
-* Lucas Lillo Ramírez - Ldelillo
-* Jose Manuel Iglesias Molina - jm-iglesias
 
