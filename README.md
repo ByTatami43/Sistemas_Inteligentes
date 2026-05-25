@@ -105,28 +105,15 @@ Se abrirán dos ventanas: la **GUI de administración de JADE** y la ventana pri
 
 ## Datos de ejemplo para la ejecución de la práctica
 
-Para probar el correcto funcionamiento del sistema, la extracción de datos mediante web scrapping y la lógica de alertas del Agente de Procesamiento, se recomienda utilizar los siguientes datos de ejemplo en el formulario de la interfaz gráfica:
+Para probar el correcto funcionamiento del sistema, la extracción de datos mediante web scrapping y la lógica de alertas del Agente de Procesamiento, se recomienda utilizar los siguientes productos en la aplicación, los datos de ejemplo ya vienen incluidos en el CSV del repositorio:
 
 **Monitor Gaming** 
-* **Umbral**: 200.00 eur aprox
+* **Umbral**: 200.00 eur
 * **URL**: https://www.ebay.es/itm/188407383759
 
 **Tarjeta Gráfica** 
-* **Umbral**: 225.00 eur aprox
+* **Umbral**: 225.00 eur
 * **URL**: https://www.ebay.es/itm/397948401953
-
-**Ratón** 
-* **Umbral**: 30.00eur aprox.
-* **URL**: https://www.ebay.es/itm/178161783338
-
-**Smartphone** 
-* **Umbral**: 165.00 eur aprox
-* **URL**: https://www.ebay.es/itm/397977260320
-
-**Tarjeta microsd** 
-* **Umbral**: 6.00 eur aprox
-* **URL**: https://www.ebay.es/itm/287121715784
-
 ---
 
 ## Diagrama de la Arquitectura del Sistema
