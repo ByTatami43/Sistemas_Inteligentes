@@ -35,7 +35,7 @@ mvn install:install-file "-Dfile=lib/jade.jar" "-DgroupId=com.tilab.jade" "-Dart
 ```
   Linux / macOS:
 ```bash
-bashmvn install:install-file -Dfile=lib/jade.jar -DgroupId=com.tilab.jade -DartifactId=jade -Dversion=4.6.0 -Dpackaging=jar
+mvn install:install-file -Dfile=lib/jade.jar -DgroupId=com.tilab.jade -DartifactId=jade -Dversion=4.6.0 -Dpackaging=jar
 ```
 Deberías ver BUILD SUCCESS.
 
