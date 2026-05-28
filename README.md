@@ -73,6 +73,9 @@ mvn clean package
 
 Desde la raíz del proyecto, lanzar la plataforma JADE con los tres agentes:
 ```bash
+mvn clean compile
+```
+```bash
 mvn exec:java
 ```
 Esto ejecuta el comando configurado en el `pom.xml`.
